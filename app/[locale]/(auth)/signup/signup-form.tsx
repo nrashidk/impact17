@@ -32,18 +32,6 @@ export function SignUpForm() {
           <Input id="name" name="name" required maxLength={80} autoComplete="name" />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="username">{t("auth.signUp.username")}</Label>
-          <Input
-            id="username"
-            name="username"
-            required
-            minLength={3}
-            maxLength={20}
-            pattern="[A-Za-z0-9\-]{3,20}"
-            autoComplete="username"
-          />
-        </div>
-        <div className="space-y-2">
           <Label htmlFor="email">{t("auth.signUp.email")}</Label>
           <Input id="email" name="email" type="email" required autoComplete="email" />
         </div>

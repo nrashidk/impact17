@@ -15,7 +15,6 @@ const signUpSchema = z
     password: z.string().min(8),
     confirmPassword: z.string(),
     name: z.string().min(1).max(80),
-    username: z.string().min(3).max(20).regex(usernameRegex),
     dateOfBirth: z
       .string()
       .regex(/^\d{4}-\d{2}-\d{2}$/, "invalidDob")
@@ -30,10 +29,8 @@ export type SignUpState = {
   error?:
     | "tooYoung"
     | "emailTaken"
-    | "usernameTaken"
     | "passwordMismatch"
     | "passwordTooShort"
-    | "usernameFormat"
     | "invalidEmail"
     | "invalidDob"
     | "missingField";
@@ -48,7 +45,6 @@ export async function signUpAction(
     password: String(formData.get("password") ?? ""),
     confirmPassword: String(formData.get("confirmPassword") ?? ""),
     name: String(formData.get("name") ?? "").trim(),
-    username: String(formData.get("username") ?? "").trim(),
     dateOfBirth: String(formData.get("dateOfBirth") ?? ""),
   };
 
@@ -58,7 +54,6 @@ export async function signUpAction(
     if (issue.message === "passwordMismatch") return { error: "passwordMismatch" };
     if (issue.message === "invalidDob") return { error: "invalidDob" };
     if (issue.path[0] === "password") return { error: "passwordTooShort" };
-    if (issue.path[0] === "username") return { error: "usernameFormat" };
     if (issue.path[0] === "email") return { error: "invalidEmail" };
     return { error: "missingField" };
   }
@@ -74,7 +69,7 @@ export async function signUpAction(
       data: {
         email: parsed.data.email.toLowerCase(),
         name: parsed.data.name,
-        username: parsed.data.username,
+        username: null,
         dateOfBirth: parsed.data.dateOfBirth,
         passwordHash,
       },
@@ -83,11 +78,12 @@ export async function signUpAction(
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
       const target = (e.meta?.target as string[] | undefined) ?? [];
       if (target.includes("email")) return { error: "emailTaken" };
-      if (target.includes("username")) return { error: "usernameTaken" };
     }
     throw e;
   }
 
+  // After sign-in the proxy will detect username == null and redirect the user
+  // to /signup/complete to pick one.
   await signIn("credentials", {
     email: parsed.data.email.toLowerCase(),
     password: parsed.data.password,
@@ -139,12 +135,39 @@ export async function signOutAction() {
   await signOut({ redirectTo: "/" });
 }
 
-const completeProfileSchema = z.object({
+// Slugifies a display name to a candidate username and finds the first free
+// variant by appending a numeric suffix when collisions exist.
+export async function suggestUsername(name: string | null | undefined): Promise<string> {
+  let base = (name ?? "")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 20);
+  if (base.length < 3) base = "user";
+  let candidate = base;
+  let suffix = 1;
+  while (await prisma.user.findUnique({ where: { username: candidate } })) {
+    suffix += 1;
+    const tail = `-${suffix}`;
+    candidate = `${base.slice(0, 20 - tail.length)}${tail}`;
+  }
+  return candidate;
+}
+
+const completeProfileFullSchema = z.object({
   username: z.string().min(3).max(20).regex(usernameRegex),
   dateOfBirth: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "invalidDob")
     .transform((s) => new Date(s + "T00:00:00.000Z")),
+});
+
+const completeProfileUsernameOnlySchema = z.object({
+  username: z.string().min(3).max(20).regex(usernameRegex),
 });
 
 export type CompleteProfileState = {
@@ -159,38 +182,64 @@ export async function completeProfileAction(
   const session = await auth();
   if (!session?.user?.id) return { error: "notSignedIn" };
 
-  const raw = {
-    username: String(formData.get("username") ?? "").trim(),
-    dateOfBirth: String(formData.get("dateOfBirth") ?? ""),
-  };
-  const parsed = completeProfileSchema.safeParse(raw);
-  if (!parsed.success) {
-    const issue = parsed.error.issues[0];
-    if (issue.message === "invalidDob") return { error: "invalidDob" };
-    if (issue.path[0] === "username") return { error: "usernameFormat" };
-    return { error: "invalidDob" };
-  }
+  const dbUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { dateOfBirth: true, username: true },
+  });
+  if (!dbUser) return { error: "notSignedIn" };
 
-  if (!isAdult(parsed.data.dateOfBirth)) {
-    // Under-18 Google user — delete the row that the adapter just created.
-    await prisma.user.delete({ where: { id: session.user.id } });
-    await (await import("@/lib/auth")).signOut({ redirect: false });
-    return { error: "tooYoung" };
-  }
+  const needsDob = !dbUser.dateOfBirth;
 
-  try {
-    await prisma.user.update({
-      where: { id: session.user.id },
-      data: {
-        username: parsed.data.username,
-        dateOfBirth: parsed.data.dateOfBirth,
-      },
+  if (needsDob) {
+    const parsed = completeProfileFullSchema.safeParse({
+      username: String(formData.get("username") ?? "").trim(),
+      dateOfBirth: String(formData.get("dateOfBirth") ?? ""),
     });
-  } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
-      return { error: "usernameTaken" };
+    if (!parsed.success) {
+      const issue = parsed.error.issues[0];
+      if (issue.message === "invalidDob") return { error: "invalidDob" };
+      if (issue.path[0] === "username") return { error: "usernameFormat" };
+      return { error: "invalidDob" };
     }
-    throw e;
+    if (!isAdult(parsed.data.dateOfBirth)) {
+      await prisma.user.delete({ where: { id: session.user.id } });
+      await (await import("@/lib/auth")).signOut({ redirect: false });
+      return { error: "tooYoung" };
+    }
+    try {
+      await prisma.user.update({
+        where: { id: session.user.id },
+        data: {
+          username: parsed.data.username,
+          dateOfBirth: parsed.data.dateOfBirth,
+        },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
+        return { error: "usernameTaken" };
+      }
+      throw e;
+    }
+  } else {
+    const parsed = completeProfileUsernameOnlySchema.safeParse({
+      username: String(formData.get("username") ?? "").trim(),
+    });
+    if (!parsed.success) {
+      const issue = parsed.error.issues[0];
+      if (issue.path[0] === "username") return { error: "usernameFormat" };
+      return { error: "usernameFormat" };
+    }
+    try {
+      await prisma.user.update({
+        where: { id: session.user.id },
+        data: { username: parsed.data.username },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
+        return { error: "usernameTaken" };
+      }
+      throw e;
+    }
   }
 
   const { redirect } = await import("next/navigation");

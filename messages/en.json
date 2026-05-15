@@ -49,7 +49,6 @@
     "signUp": {
       "title": "Create your account",
       "name": "Full name",
-      "username": "Username",
       "email": "Email",
       "dob": "Date of birth",
       "password": "Password",
@@ -68,8 +67,12 @@
       "continueWith": "Continue with Google"
     },
     "complete": {
-      "title": "Almost there",
-      "subtitle": "Tell us your date of birth and pick a username to finish setting up your account."
+      "titleCredentialsUser": "One more step — pick a username",
+      "titleGoogleUser": "Almost there",
+      "subtitleCredentialsUser": "Choose how others will see you on Impact17. You can change this later.",
+      "subtitleGoogleUser": "Tell us your date of birth and pick a username to finish setting up your account.",
+      "username": "Username",
+      "usernameHint": "This is how others will find you on Impact17. 3–20 characters, letters, numbers, and hyphens only."
     },
     "errors": {
       "invalidCredentials": "Invalid email or password.",
