@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { prisma } from "@/lib/db";
+import { auth } from "@/lib/auth";
 import { localeText, localeJsonArray } from "@/lib/i18n-fields";
 import { EffortBadge } from "@/components/features/effort-badge";
 import { Button } from "@/components/ui/button";
@@ -42,6 +43,9 @@ export default async function ActionDetailPage({
 
   const action = await getAction(slug, actionSlug);
   if (!action) notFound();
+
+  const session = await auth();
+  const signedIn = Boolean(session?.user);
 
   const sdgName = localeText(action.sdg.nameEn, action.sdg.nameAr, locale);
   const title = localeText(action.titleEn, action.titleAr, locale);
@@ -117,8 +121,8 @@ export default async function ActionDetailPage({
 
       <section className="px-6 pb-16">
         <div className="mx-auto max-w-3xl">
-          <Button size="lg" disabled className="w-full sm:w-auto">
-            {t("action.signInToSubmit")}
+          <Button size="lg" disabled={!signedIn} className="w-full sm:w-auto">
+            {signedIn ? t("action.submitThisAction") : t("action.signInToSubmit")}
           </Button>
         </div>
       </section>

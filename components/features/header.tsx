@@ -1,9 +1,12 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { auth } from "@/lib/auth";
 import { LocaleSwitcher } from "./locale-switcher";
+import { SignOutButton } from "./sign-out-button";
 
 export async function Header({ locale }: { locale: string }) {
   const t = await getTranslations("nav");
+  const session = await auth();
 
   return (
     <header className="border-b border-zinc-200 dark:border-zinc-800">
@@ -15,17 +18,33 @@ export async function Header({ locale }: { locale: string }) {
           <Link href="/" className="hover:text-zinc-900 dark:hover:text-zinc-50">
             {t("home")}
           </Link>
-          <Link href="/" className="hover:text-zinc-900 dark:hover:text-zinc-50">
-            {t("sdgs")}
-          </Link>
-          <Link href="/" className="hover:text-zinc-900 dark:hover:text-zinc-50">
-            {t("leaderboard")}
-          </Link>
-          <Link href="/" className="hover:text-zinc-900 dark:hover:text-zinc-50">
-            {t("profile")}
-          </Link>
         </nav>
-        <LocaleSwitcher currentLocale={locale} />
+        <div className="flex items-center gap-3">
+          {session?.user ? (
+            <>
+              <span className="text-sm text-zinc-700 dark:text-zinc-300">
+                {session.user.name ?? session.user.username ?? session.user.email}
+              </span>
+              <SignOutButton label={t("signOut")} />
+            </>
+          ) : (
+            <>
+              <Link
+                href="/signin"
+                className="text-sm font-medium text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-50"
+              >
+                {t("signIn")}
+              </Link>
+              <Link
+                href="/signup"
+                className="hidden sm:inline-flex text-sm font-medium text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-50"
+              >
+                {t("signUp")}
+              </Link>
+            </>
+          )}
+          <LocaleSwitcher currentLocale={locale} />
+        </div>
       </div>
     </header>
   );
