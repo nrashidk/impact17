@@ -1,0 +1,21 @@
+{
+  "home": {
+    "title": "Impact17",
+    "subtitle": "Take real action on all 17 UN Sustainable Development Goals.",
+    "cta": "Browse the 17 SDGs"
+  },
+  "nav": {
+    "home": "Home",
+    "sdgs": "SDGs",
+    "leaderboard": "Leaderboard",
+    "profile": "Profile"
+  },
+  "locale": {
+    "switchTo": "Switch language",
+    "english": "English",
+    "arabic": "العربية"
+  },
+  "footer": {
+    "tagline": "Verified action on the UN Sustainable Development Goals — UAE-localised."
+  }
+}
