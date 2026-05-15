@@ -17,5 +17,28 @@
   },
   "footer": {
     "tagline": "عمل موثق لتحقيق أهداف التنمية المستدامة للأمم المتحدة — بمحتوى محلي إماراتي."
+  },
+  "sdg": {
+    "actionCount": "{count, plural, =0 {لا توجد إجراءات} =1 {إجراء واحد} =2 {إجراءان} few {# إجراءات} many {# إجراءً} other {# إجراء}}",
+    "backToAll": "العودة إلى جميع الأهداف",
+    "actions": "الإجراءات"
+  },
+  "action": {
+    "howTo": "كيفية التنفيذ",
+    "reflectionPrompts": "أسئلة التأمل",
+    "signInToSubmit": "سجّل الدخول لتقديم هذا الإجراء",
+    "backToSdg": "العودة إلى {name}",
+    "verificationPhysical": "التحقق بالصورة: نشاط واقعي",
+    "verificationArtefact": "التحقق بالصورة: عمل منجز"
+  },
+  "effort": {
+    "easy": "سهل",
+    "medium": "متوسط",
+    "hard": "صعب"
+  },
+  "common": {
+    "comingSoon": "قريباً",
+    "notFound": "غير موجود",
+    "points": "{count, plural, =0 {لا توجد نقاط} =1 {نقطة واحدة} =2 {نقطتان} few {# نقاط} many {# نقطة} other {# نقطة}}"
   }
 }
