@@ -85,6 +85,8 @@ model Action {
   descriptionAr    String?
   howToStepsEn     Json
   howToStepsAr     Json?
+  reflectionPromptsEn Json
+  reflectionPromptsAr Json?
   effortTier       EffortTier
   points           Int
   verificationType VerificationType
