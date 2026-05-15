@@ -8,7 +8,7 @@ This file is read by Claude Code at the start of every session. It defines what 
 
 Impact17 is a bilingual (Arabic/English) public consumer web platform where users complete real-world UN Sustainable Development Goal (SDG) actions, submit photo proof, earn badges, climb leaderboards, and engage socially. The platform serves UAE users primarily; content is UAE-localised throughout.
 
-**Core user loop:** Land on the site → see all 17 SDGs → pick an SDG → pick one of 10 actions → read "how to" steps → do it in real life → submit photo + summary + reflection + enjoyment + 1-5 star rating → AI verifies photo → earn action badge → complete all 10 actions in an SDG → earn SDG badge + 300-point bonus → complete all 17 SDGs → headline achievement.
+**Core user loop:** Land on the site → see all 17 SDGs → pick an SDG → pick one of 10 actions → read "how to" steps → do it in real life → submit photo + summary + reflection + enjoyment + 1-5 star rating → AI verifies photo → earn action badge → complete all 10 actions in an SDG → earn SDG badge + 200-point bonus → complete all 17 SDGs → headline achievement.
 
 ---
 
@@ -80,7 +80,7 @@ These are decisions already locked. Do not relitigate or "improve" them without 
 1. **All 17 SDGs in v1.** 170 total actions, 10 per SDG. Catalogue is locked content (see `/content` folder).
 2. **AI photo verification on every submission.** Use Claude vision via the Anthropic API. Match the photo against the action description; return JSON with `match`, `confidence`, `reason`. High confidence → auto-approve, medium → manual review queue, low → reject with reason.
 3. **Adults-only at launch.** Age gate at sign-up: date of birth required, under-18 cannot register. Parental consent flow comes in v1.5 — DO NOT build it now.
-4. **Effort-weighted points:** Easy = 5, Medium = 10, Hard = 20. SDG completion bonus = 300.
+4. **Effort-weighted points:** Easy = 5, Medium = 10, Hard = 20. SDG completion bonus = 200.
 5. **One action = one SDG.** Each action has exactly one primary SDG. Do not multi-credit.
 6. **Hybrid moderation:** EVERY photo and EVERY reflection runs through Claude API for content moderation before becoming visible. Plus user reports. Plus a manual review queue in `/admin`.
 7. **Bilingual at launch.** English and Arabic. Every UI string lives in `/messages`. Arabic RTL must work everywhere. Test layouts in both.

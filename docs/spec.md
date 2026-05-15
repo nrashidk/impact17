@@ -1,209 +1,174 @@
-# Impact17 — Claude Code Prompt Sequence
+# Impact17 — Complete Product Specification
 
-## How to use this file
+**Status:** FINAL. All decisions locked.
 
-These are the prompts you paste into Claude Code, in order, after the repo and CLAUDE.md are set up. Each prompt produces one reviewable chunk of work. Do not skip ahead. Run, review, commit, then next.
-
-**Before you start:**
-1. Create empty GitHub repo named `impact17`
-2. Clone it locally
-3. Put `CLAUDE.md` in the root (the one from the other file)
-4. Put the catalogue markdown files in `/content/` (one per SDG, named `sdg-01.md` through `sdg-17.md`)
-5. Open the repo in Claude Code (`claude` command in the terminal at the repo root)
-6. Paste **Prompt 1** below
+This document supersedes all previous Impact17 plans.
 
 ---
 
-## Prompt 1 — Project Foundation
+## 1. What Impact17 is
 
-```
-Set up a new Next.js 14 project for Impact17 in this empty repository.
+A bilingual (Arabic/English) public consumer web platform for taking verified action on the 17 UN Sustainable Development Goals. Users complete real-world sustainability actions, submit photo proof, earn badges, climb leaderboards, and engage socially. Launched and maintained personally by Nasser.
 
-Read CLAUDE.md first and follow its conventions strictly.
-
-Tasks for this prompt only:
-
-1. Initialize a Next.js 14 project with TypeScript (strict), Tailwind CSS, and App Router. Use `npx create-next-app@latest` with these flags.
-
-2. Set up the directory structure exactly as described in CLAUDE.md (app, components, lib, prisma, messages, content, scripts).
-
-3. Install and configure:
-   - Prisma with PostgreSQL provider
-   - next-intl for i18n with English and Arabic locales (RTL support for Arabic)
-   - NextAuth v5 (auth.js) — scaffold only, no providers wired yet
-   - Anthropic SDK (npm: @anthropic-ai/sdk)
-   - Zod
-   - shadcn/ui — initialise it and add Button, Card, Dialog, Input, Textarea, and Form components only
-   - ESLint + Prettier
-
-4. Create the Prisma schema with these models for Phase 1:
-   - User (id, email, name, username, dateOfBirth, createdAt, profileImage, points default 0)
-   - Sdg (id 1-17, number, slug, nameEn, nameAr, color, descriptionEn, descriptionAr, iconUrl)
-   - Action (id, sdgId, slug, titleEn, titleAr, descriptionEn, descriptionAr, howToStepsEn json, howToStepsAr json, effortTier enum [EASY, MEDIUM, HARD], points int, verificationType enum [PHOTO_PHYSICAL, PHOTO_ARTEFACT], primarySdgId)
-   - (Submission, Badge, Comment, Follow, Like, Block, Report — schemas only, not used in Phase 1)
-
-5. Set up next-intl with /messages/en.json and /messages/ar.json. Put placeholder UI strings for: home.title, home.subtitle, home.cta, nav.home, nav.sdgs, nav.leaderboard, nav.profile.
-
-6. Create a basic layout:
-   - Root layout with locale switcher
-   - Header with logo placeholder and nav
-   - Footer
-
-7. Make a landing page at /[locale]/page.tsx that:
-   - Shows a hero with "Impact17" and a tagline
-   - Below the hero, shows a grid placeholder for the 17 SDGs (just colored cards with the SDG number for now — no data yet, no real cards)
-   - Works in both English and Arabic, with RTL flipping correctly in Arabic
-
-8. Set up the .env file structure with placeholders:
-   - DATABASE_URL
-   - NEXTAUTH_SECRET
-   - NEXTAUTH_URL
-   - GOOGLE_CLIENT_ID
-   - GOOGLE_CLIENT_SECRET
-   - ANTHROPIC_API_KEY
-   - RESEND_API_KEY
-
-9. Create a README with quick-start instructions.
-
-10. Commit as "feat: project foundation" using conventional commits.
-
-After these tasks, run `npx tsc --noEmit` and `npm run lint` and confirm both pass.
-
-Do NOT:
-- Build pages beyond the landing placeholder
-- Wire up auth providers
-- Import the SDG catalogue yet
-- Add features not listed
-- Modify CLAUDE.md
-
-When done, stop and tell me what was built and what's next.
-```
+**Core loop:**
+Landing page (SDG wheel) → scroll to grid of 17 SDGs → click an SDG → see 10 actions → click an action → read "how to" steps → do it in real life → submit photo + summary + reflection + what you enjoyed + star rating → AI verifies → earn action badge. Complete all 10 actions in an SDG → SDG badge + 200-point bonus. Complete all 17 SDGs → headline achievement.
 
 ---
 
-## Prompt 2 — Import the SDG Catalogue
+## 2. Locked decisions
 
-*Run after Prompt 1 is complete and committed.*
+### Product & scope
+| Area | Decision |
+|---|---|
+| Product type | Real consumer product, public launch, maintained personally for years |
+| Scope | All 17 SDGs in v1, ~170 actions |
+| Completion goal | "Complete all 17 SDGs" is the headline user goal |
+| Languages | Bilingual Arabic/English at launch; Nasser writes English, AI translates, Nasser edits Arabic |
 
-```
-Phase 1 continues. Import the SDG catalogue from /content/ into the database.
+### Actions & content
+| Area | Decision |
+|---|---|
+| Content source | Existing 170-action list from the proposal document |
+| Non-verifiable actions | ~60 weak actions ("promote respect", "speak kindly") rewritten as photo-verifiable equivalents ("write a kindness note and photograph it") |
+| Duplicate actions | Each action credited to ONE primary SDG only; gaps from deduplication filled with new actions so every SDG has 10 distinct actions |
+| Effort tiers | Every action tagged Easy / Medium / Hard; ~40% / 40% / 20% split per SDG |
+| "How to do this" guide | 3–6 short bullet steps per action; **UAE-localised — names real UAE species, places, partners, and programmes (Goumbook, Sparklo, EAD, etc.)** |
 
-Read CLAUDE.md again if needed.
+### Verification & points
+| Area | Decision |
+|---|---|
+| Verification | AI photo verification (Claude vision API) on every submission + perceptual hashing to block reused photos |
+| Points | Effort-weighted: Easy = 5, Medium = 10, Hard = 20. Plus 200-point bonus per completed SDG |
+| Failed verification | User sees why it failed and can resubmit |
 
-Tasks:
+### Social & engagement
+| Area | Decision |
+|---|---|
+| Profiles | Public profiles with badge walls |
+| Reflections | Public |
+| Social features | Full social: comments, follows, likes |
+| Leaderboard | Weekly + all-time, both visible from launch |
+| Notifications | On (badge earned, weekly progress, social activity) |
 
-1. The /content folder contains 17 markdown files (sdg-01.md to sdg-17.md), each containing 10 actions following the format from the Impact17 catalogue. Write a script at /scripts/import-content.ts that:
-   - Parses each markdown file
-   - Extracts: action title, effort tier, points, verification type, "how to" steps, reflection prompts, primary SDG, whether it's a rewritten action
-   - Creates Sdg and Action records via Prisma
-   - Is idempotent — running it twice doesn't create duplicates
+### Moderation & safety
+| Area | Decision |
+|---|---|
+| Moderation system | Hybrid: AI pre-screen on every photo + reflection before visible, user reports, manual review queue for edge cases |
 
-2. The 17 SDGs themselves need seed data: number, slug (e.g., "no-poverty"), nameEn, nameAr, official UN color hex, short descriptionEn, descriptionAr, and the standard UN icon URL. Use accurate UN information. Hardcode this in /scripts/seed-sdgs.ts.
-
-3. Create /prisma/seed.ts that calls both scripts in order: SDGs first, then content.
-
-4. Wire it up so `npx prisma db seed` runs everything.
-
-5. Add an npm script `db:reset` that drops, migrates, and seeds.
-
-6. Run the seed and confirm all 17 SDGs and 170 actions are in the database. Print a summary.
-
-7. Commit as "feat: import SDG catalogue".
-
-Do NOT:
-- Build any frontend that uses this data yet (that's the next prompt)
-- Translate the content to Arabic (that's Phase 6)
-- Modify the catalogue content
-
-Stop when done and confirm: how many SDGs, how many actions, any parsing issues to flag.
-```
-
----
-
-## Prompt 3 — SDG Browse Pages (Read-Only)
-
-*Run after Prompt 2 is complete and seeded.*
-
-```
-Phase 1 final task: build the read-only browsing experience.
-
-Tasks:
-
-1. Replace the placeholder cards on the landing page with real SDG cards pulled from the database. Each card shows: SDG number, name (locale-aware), color, icon, action count.
-
-2. Build /[locale]/sdgs/[slug]/page.tsx:
-   - Header showing SDG number, name, description, color banner
-   - Grid of 10 action cards for that SDG
-   - Each action card shows: title, effort tier badge (Easy/Medium/Hard), points, primary-SDG indicator
-   - Locale-aware throughout
-
-3. Build /[locale]/actions/[slug]/page.tsx:
-   - Title, effort tier, points
-   - "How to do this" section showing the steps
-   - Reflection prompts shown as preview only
-   - Big "Sign in to submit" CTA (not functional yet — auth is Phase 2)
-
-4. Add navigation: clicking an SDG card on the landing page goes to its SDG page; clicking an action card goes to its action page; back links work.
-
-5. Mobile-first responsive design throughout. Test at 375px, 768px, 1280px.
-
-6. Make sure Arabic RTL flips correctly on all three page types.
-
-7. Add basic empty/loading/error states.
-
-8. Run typecheck and lint. Commit as "feat: SDG browse pages".
-
-Do NOT:
-- Implement submission yet
-- Implement auth yet
-- Add social features
-- Build the dashboard yet
-
-Phase 1 is complete after this. Stop and confirm what works.
-```
+### Account & infrastructure
+| Area | Decision |
+|---|---|
+| Auth | Email/password + Google sign-in |
+| Analytics | On |
+| Monetisation | Not at launch |
+| Launch | Soft launch |
+| Domain | To be confirmed by Nasser (end of day) |
+| Tech stack | Next.js + Tailwind (frontend); Django + DRF + PostgreSQL (backend); Claude API (verification + moderation) — matches existing Masary Manager stack |
+| Hosting | Vercel (frontend) + DigitalOcean Droplet or Render (backend) |
+| Build | Solo, ~15 hrs/week |
 
 ---
 
-## What comes next (preview, do not paste yet)
+## 3. Resolved — final decisions
 
-After Phase 1 is shipped and you can browse all 17 SDGs and 170 actions in both languages:
+### Minor users
+**Decision: Adults-only at launch (18+ age gate at sign-up). Parental consent flow added in v1.5.**
+A self-confirm checkbox is not legally valid under UAE PDPL. Launch is 18+; verifiable parental consent flow comes in v1.5 once the core product is stable.
 
-- **Prompt 4:** Auth setup — credentials + Google, age gate at sign-up (block <18)
-- **Prompt 5:** Action submission form — photo upload, summary, reflection, enjoyment, rating
-- **Prompt 6:** Claude vision verification — wire up the AI verification step
-- **Prompt 7:** Badge logic — award badges on successful submission, SDG bonus on completion
-- **Prompt 8:** User dashboard — badges, points, suggested actions
-- **Prompt 9:** Leaderboard — weekly + all-time
-- **Prompt 10:** Public profile pages
-- **Prompts 11–14:** Social features in order — likes first, then comments, then follows, then block/mute/report
-- **Prompt 15:** Content moderation integration — Claude API for every photo and reflection
-- **Prompt 16:** Perceptual hashing for photo reuse
-- **Prompt 17:** Admin moderation queue
-- **Prompt 18:** Arabic translation pass for UI strings
-- **Prompt 19:** Accessibility + performance audit
-- **Prompt 20:** Soft launch checklist (legal pages, analytics, error tracking)
-
-I'll draft each of these when you reach that phase. Don't paste them in advance — the codebase will have evolved by the time you get there and the prompts need to match what's actually there.
+### Social safety tooling — ships in v1
+Full social (comments, follows, likes) ships with full safety tooling in v1:
+- Block and mute functions
+- Harassment/abuse policy
+- Report flow for behaviour (not just content)
+- Manual review queue covers both content and behaviour reports
 
 ---
 
-## Rules for using Claude Code well
+## 4. Page types
 
-1. **One prompt at a time, then review and commit before the next.** If you batch prompts, you batch bugs.
-2. **Read the diff.** Don't blindly accept code. Even fast review catches structural issues.
-3. **Test manually after every prompt.** "It compiles" is not the same as "it works."
-4. **Push back when Claude Code over-builds.** It will sometimes add features you didn't ask for. Tell it to remove them.
-5. **Keep CLAUDE.md updated.** When you make a decision (e.g., "we're using Resend for email"), add it. The file is the project's memory across sessions.
-6. **Branch per phase.** `git checkout -b phase-1` etc. Merge to main only when the phase is genuinely done.
-7. **Don't accept "I think this works."** Make Claude Code run typecheck, lint, and manual smoke tests before declaring done.
-8. **When something breaks, paste the actual error.** Don't describe it. Paste the stack trace verbatim.
+1. **Landing** — SDG wheel hero, scroll to 4-col grid of 17 SDGs, global stats bar, sign up CTA
+2. **SDG page** — SDG header, grid of 10 actions, personal completion progress
+3. **Action page** — title, effort badge, points, "how to" steps, submission form (photo + summary + reflection + enjoyment + rating)
+4. **User dashboard** — profile, badge wall, points, suggested next actions, leaderboard preview
+5. **Leaderboard** — weekly + all-time tabs
+6. **Public profile** — badge wall, action count, public reflections, follow button
+7. **Social/activity feed** — comments, likes, follows activity
+8. **Moderation queue** (admin, Nasser only) — AI-flagged content + user reports
 
 ---
 
-## If something goes sideways
+## 5. Honest build estimate
 
-- **Claude Code drifts from the spec:** point it back to CLAUDE.md explicitly.
-- **It introduces a library you don't want:** say so, ask it to remove it.
-- **It generates code that doesn't compile:** paste the error, ask it to fix only that error.
-- **It tries to refactor unrelated code:** stop it. Tell it to revert and stick to the prompt.
-- **A prompt is too big and the output is messy:** kill it, split into smaller prompts.
+| Scope component | Build time (solo, ~15 hrs/week) |
+|---|---|
+| Core platform (17 SDGs, AI verification, badges, leaderboard, public profiles) | 6 weeks |
+| Full social (comments, follows, likes) | +2 weeks |
+| Social safety tooling (block, mute, abuse policy, behaviour reports) | +1 week |
+| 18+ age gate | included in core |
+| **Total** | **~9 weeks** |
+
+Parental consent flow for minors (v1.5) is +1 week, deferred — not in this estimate.
+
+Plus content work in parallel: rewriting ~60 actions, filling deduplication gaps, assigning effort tiers, writing 170 "how to" guides, translating all to Arabic. This is the silent bottleneck — budget 30–40 hours.
+
+---
+
+## 6. Ongoing cost estimate (personal, post-launch)
+
+| Item | At ~1,000 active users | At ~10,000 active users |
+|---|---|---|
+| Hosting | $20–50/mo | $150–400/mo |
+| Database | $15–30/mo | $80–200/mo |
+| Claude API (verification + moderation) | $30–80/mo | $300–800/mo |
+| Email service | $10–20/mo | $50–150/mo |
+| Domain + SSL | ~$30/yr | ~$30/yr |
+| **Total** | **~$75–180/mo** | **~$580–1,550/mo** |
+
+No revenue at launch by decision. These costs are personal and ongoing for years.
+
+---
+
+## 7. Risks on the record
+
+These have been flagged and accepted, not solved:
+
+1. **9th active workstream** alongside InvoLinks, Future Pathways, Kanz, uaeroots, Masary Manager, CEC-ECAE work, AI content factory, and family. Load is real.
+2. **No competitive moat.** Existing platforms (AWorld — UN-partnered, Joulebug, Capture) already do verified SDG action. "Why Impact17 instead" is unanswered.
+3. **Differentiation: UAE localisation is the moat.** Existing platforms (AWorld — UN-partnered, Joulebug, Capture) do verified SDG action globally but generically. Impact17's answer to "why this instead of AWorld" is UAE-localised content — real species, places, partners, programmes — marketed to a UAE audience the founder already reaches. This is structurally hard for a global platform to copy. It must be executed well in the catalogue or the advantage is lost.
+4. **Scope grew at every fork** — all 17 SDGs, full social, public everything. Each defensible alone; stacked, it's an 9–11 week solo build for a product with no validated demand.
+5. **Permanent personal maintenance + cost burden** with no monetisation plan.
+6. **Moderation load is forever.** Full social + public reflections + minors (if added) = continuous moderation obligation, not a one-time build.
+
+---
+
+## 8. Recommended sequencing (not a scope cut — a reorder)
+
+If the goal is to launch *and survive*:
+
+1. **v1 (launch):** 17 SDGs, AI verification, badges, leaderboard, public profiles, adults-only. NO social features yet.
+2. **v1.5 (4–6 weeks post-launch):** Parental consent flow + minor users, once core is stable.
+3. **v2 (validated demand):** Full social — comments, follows, likes — with safety tooling, once there are enough users for social to matter.
+
+This launches in ~6 weeks instead of ~11, validates demand before the expensive social build, and defers the moderation burden until there are users to moderate. The vision is unchanged — only the order is.
+
+You've chosen the all-at-once path. This section is here so the alternative is on the record.
+
+---
+
+## 9. Next steps — spec is final, build can begin
+
+1. **Action catalogue rewrite** (English first) — the biggest content job:
+   - Replace the ~60 non-photo-verifiable actions with photo-verifiable equivalents
+   - Fill deduplication gaps so every SDG has 10 distinct actions
+   - Assign Easy/Medium/Hard effort tier to all ~170
+   - Write 3–6 step "how to" guide for each
+   - Assign primary SDG to each action
+2. **Data model + Django backend scaffold** — users, SDGs, actions, submissions, badges, points, social graph, moderation queue
+3. **Arabic translation pass** — all action content + UI strings
+4. **Frontend build** — 8 page types, mobile-first, RTL support
+5. **AI integration** — Claude API for photo verification + content moderation pre-screen
+6. **Social + safety build** — comments, follows, likes, block, mute, report flow
+7. **Testing** — verification accuracy, moderation coverage, RTL layout, edge cases
+8. **Soft launch**
+
+**Recommended starting point:** the action catalogue rewrite. It's the bottleneck, it's needed before backend data modelling, and it can be done in parallel with nothing else blocking it.
