@@ -1,0 +1,198 @@
+// Impact17 Prisma schema
+// Phase 1: User, Sdg, Action are populated. Submission, Badge, social, and
+// moderation models exist as compile-targets only — they will be expanded in
+// later phases.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum EffortTier {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum VerificationType {
+  PHOTO_PHYSICAL
+  PHOTO_ARTEFACT
+}
+
+enum SubmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  IN_REVIEW
+}
+
+enum ReportStatus {
+  OPEN
+  REVIEWED
+  RESOLVED
+  DISMISSED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  username     String   @unique
+  dateOfBirth  DateTime
+  profileImage String?
+  points       Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  submissions  Submission[]
+  badges       Badge[]
+  comments     Comment[]
+  followers    Follow[]     @relation("UserFollowers")
+  following    Follow[]     @relation("UserFollowing")
+  likes        Like[]
+  blocksMade   Block[]      @relation("BlockBlocker")
+  blocksAgainst Block[]     @relation("BlockBlocked")
+  reportsMade  Report[]     @relation("ReportReporter")
+  reportsAgainst Report[]   @relation("ReportSubject")
+}
+
+model Sdg {
+  id            Int      @id
+  number        Int      @unique
+  slug          String   @unique
+  nameEn        String
+  nameAr        String
+  color         String
+  descriptionEn String
+  descriptionAr String
+  iconUrl       String?
+
+  actions          Action[] @relation("SdgActions")
+  primaryActions   Action[] @relation("SdgPrimaryActions")
+}
+
+model Action {
+  id               String           @id @default(cuid())
+  sdgId            Int
+  slug             String           @unique
+  titleEn          String
+  titleAr          String?
+  descriptionEn    String?
+  descriptionAr    String?
+  howToStepsEn     Json
+  howToStepsAr     Json?
+  effortTier       EffortTier
+  points           Int
+  verificationType VerificationType
+  primarySdgId     Int
+
+  sdg              Sdg              @relation("SdgActions", fields: [sdgId], references: [id])
+  primarySdg       Sdg              @relation("SdgPrimaryActions", fields: [primarySdgId], references: [id])
+  submissions      Submission[]
+
+  @@index([sdgId])
+  @@index([primarySdgId])
+}
+
+// --- Stubs below: not used in Phase 1 ---
+
+model Submission {
+  id            String           @id @default(cuid())
+  userId        String
+  actionId      String
+  photoUrl      String
+  photoHash     String?
+  summary       String
+  reflection    String
+  enjoyment     String?
+  rating        Int?
+  status        SubmissionStatus @default(PENDING)
+  aiMatch       Boolean?
+  aiConfidence  Float?
+  aiReason      String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  user          User             @relation(fields: [userId], references: [id])
+  action        Action           @relation(fields: [actionId], references: [id])
+
+  @@index([userId])
+  @@index([actionId])
+}
+
+model Badge {
+  id        String   @id @default(cuid())
+  userId    String
+  kind      String
+  refId     String
+  awardedAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model Comment {
+  id          String   @id @default(cuid())
+  userId      String
+  targetType  String
+  targetId    String
+  body        String
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model Follow {
+  id          String   @id @default(cuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower    User     @relation("UserFollowing", fields: [followerId], references: [id])
+  following   User     @relation("UserFollowers", fields: [followingId], references: [id])
+
+  @@unique([followerId, followingId])
+}
+
+model Like {
+  id          String   @id @default(cuid())
+  userId      String
+  targetType  String
+  targetId    String
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, targetType, targetId])
+}
+
+model Block {
+  id         String   @id @default(cuid())
+  blockerId  String
+  blockedId  String
+  createdAt  DateTime @default(now())
+
+  blocker    User     @relation("BlockBlocker", fields: [blockerId], references: [id])
+  blocked    User     @relation("BlockBlocked", fields: [blockedId], references: [id])
+
+  @@unique([blockerId, blockedId])
+}
+
+model Report {
+  id          String       @id @default(cuid())
+  reporterId  String
+  subjectId   String?
+  targetType  String
+  targetId    String
+  reason      String
+  status      ReportStatus @default(OPEN)
+  createdAt   DateTime     @default(now())
+
+  reporter    User         @relation("ReportReporter", fields: [reporterId], references: [id])
+  subject     User?        @relation("ReportSubject", fields: [subjectId], references: [id])
+}

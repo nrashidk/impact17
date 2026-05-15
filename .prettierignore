@@ -1,0 +1,9 @@
+node_modules
+.next
+build
+dist
+out
+content
+docs
+*.lock
+package-lock.json
