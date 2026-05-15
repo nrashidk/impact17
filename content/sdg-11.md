@@ -70,7 +70,7 @@
   - Photograph your finished guide.
 - **Reflection prompts:** What service is most overlooked? Who did you share it with? What did you enjoy?
 
-## 11.8 — Design a improvement for your neighbourhood
+## 11.8 — Design an improvement for your neighbourhood
 - **Effort:** Medium | **Points:** 10 | **Verification:** Photo of the design/proposal *(rewritten)*
 - **How to do this:**
   - Identify something that would make your neighbourhood better — shade, seating, a crossing, a green corner.
