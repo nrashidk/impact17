@@ -8,7 +8,10 @@
     "home": "Home",
     "sdgs": "SDGs",
     "leaderboard": "Leaderboard",
-    "profile": "Profile"
+    "profile": "Profile",
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "signOut": "Sign out"
   },
   "locale": {
     "switchTo": "Switch language",
@@ -27,6 +30,7 @@
     "howTo": "How to do this",
     "reflectionPrompts": "Reflection prompts",
     "signInToSubmit": "Sign in to submit this action",
+    "submitThisAction": "Submit this action",
     "backToSdg": "Back to {name}",
     "verificationPhysical": "Photo verification: physical activity",
     "verificationArtefact": "Photo verification: created artefact"
@@ -40,5 +44,45 @@
     "comingSoon": "Coming soon",
     "notFound": "Not found",
     "points": "{count, plural, =1 {# point} other {# points}}"
+  },
+  "auth": {
+    "signUp": {
+      "title": "Create your account",
+      "name": "Full name",
+      "username": "Username",
+      "email": "Email",
+      "dob": "Date of birth",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "submit": "Create account",
+      "alreadyHaveAccount": "Already have an account?"
+    },
+    "signIn": {
+      "title": "Sign in",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "noAccount": "Don't have an account?"
+    },
+    "google": {
+      "continueWith": "Continue with Google"
+    },
+    "complete": {
+      "title": "Almost there",
+      "subtitle": "Tell us your date of birth and pick a username to finish setting up your account."
+    },
+    "errors": {
+      "invalidCredentials": "Invalid email or password.",
+      "tooYoung": "You must be 18 or older to sign up. Impact17 is currently adults-only.",
+      "emailTaken": "An account with that email already exists.",
+      "usernameTaken": "That username is already taken.",
+      "passwordMismatch": "Passwords don't match.",
+      "passwordTooShort": "Password must be at least 8 characters.",
+      "usernameFormat": "Username must be 3–20 characters, letters, numbers, or hyphens only.",
+      "invalidEmail": "Please enter a valid email address.",
+      "invalidDob": "Please enter a valid date of birth.",
+      "missingField": "Please fill in all required fields.",
+      "notSignedIn": "You need to be signed in to do that."
+    }
   }
 }
