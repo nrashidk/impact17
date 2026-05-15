@@ -17,7 +17,13 @@ function SubmitButton({ label }: { label: string }) {
   );
 }
 
-export function CompleteProfileForm({ initialUsername }: { initialUsername: string }) {
+export function CompleteProfileForm({
+  needsDob,
+  initialUsername,
+}: {
+  needsDob: boolean;
+  initialUsername: string;
+}) {
   const t = useTranslations();
   const [state, formAction] = useActionState<CompleteProfileState | undefined, FormData>(
     completeProfileAction,
@@ -27,7 +33,7 @@ export function CompleteProfileForm({ initialUsername }: { initialUsername: stri
   return (
     <form action={formAction} className="space-y-4" noValidate>
       <div className="space-y-2">
-        <Label htmlFor="username">{t("auth.signUp.username")}</Label>
+        <Label htmlFor="username">{t("auth.complete.username")}</Label>
         <Input
           id="username"
           name="username"
@@ -37,12 +43,19 @@ export function CompleteProfileForm({ initialUsername }: { initialUsername: stri
           maxLength={20}
           pattern="[A-Za-z0-9\-]{3,20}"
           autoComplete="username"
+          aria-describedby="username-hint"
         />
+        <p id="username-hint" className="text-xs text-zinc-500">
+          {t("auth.complete.usernameHint")}
+        </p>
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="dateOfBirth">{t("auth.signUp.dob")}</Label>
-        <Input id="dateOfBirth" name="dateOfBirth" type="date" required />
-      </div>
+
+      {needsDob && (
+        <div className="space-y-2">
+          <Label htmlFor="dateOfBirth">{t("auth.signUp.dob")}</Label>
+          <Input id="dateOfBirth" name="dateOfBirth" type="date" required />
+        </div>
+      )}
 
       {state?.error && (
         <p role="alert" className="text-sm font-medium text-destructive">
