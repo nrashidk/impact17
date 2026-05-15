@@ -14,10 +14,13 @@
 
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import type { PrismaClient, EffortTier, VerificationType } from "@prisma/client";
 
-const CONTENT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "content");
+// Resolved relative to the process working directory. Locally this is the
+// project root; on Vercel it is the deployment root. The content/ folder is
+// listed in next.config.ts → outputFileTracingIncludes so the serverless
+// function bundle includes the 17 markdown files.
+const CONTENT_DIR = path.resolve(process.cwd(), "content");
 
 type ParsedAction = {
   sdgId: number;

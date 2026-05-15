@@ -17,5 +17,28 @@
   },
   "footer": {
     "tagline": "Verified action on the UN Sustainable Development Goals — UAE-localised."
+  },
+  "sdg": {
+    "actionCount": "{count, plural, =1 {# action} other {# actions}}",
+    "backToAll": "Back to all SDGs",
+    "actions": "Actions"
+  },
+  "action": {
+    "howTo": "How to do this",
+    "reflectionPrompts": "Reflection prompts",
+    "signInToSubmit": "Sign in to submit this action",
+    "backToSdg": "Back to {name}",
+    "verificationPhysical": "Photo verification: physical activity",
+    "verificationArtefact": "Photo verification: created artefact"
+  },
+  "effort": {
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard"
+  },
+  "common": {
+    "comingSoon": "Coming soon",
+    "notFound": "Not found",
+    "points": "{count, plural, =1 {# point} other {# points}}"
   }
 }
