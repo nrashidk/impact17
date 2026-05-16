@@ -80,10 +80,6 @@ export function SubmitForm({
   const { startUpload, isUploading } = useUploadThing("submissionPhoto", {
     onClientUploadComplete: (res) => {
       const url = res?.[0]?.ufsUrl ?? "";
-      console.log("[uploadthing] client upload complete", {
-        count: res?.length ?? 0,
-        url,
-      });
       setPhotoUrl(url);
       setUploadError(null);
     },
