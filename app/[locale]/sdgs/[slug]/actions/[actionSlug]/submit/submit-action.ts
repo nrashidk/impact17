@@ -12,7 +12,7 @@ const submitSchema = z.object({
   photoUrl: z
     .string()
     .url()
-    .refine((u) => /^https?:\/\/[^/]*utfs\.io\//.test(u) || /ufs\.sh\//.test(u), {
+    .refine((u) => /^https:\/\/[a-z0-9-]+\.public\.blob\.vercel-storage\.com\//.test(u), {
       message: "invalidPhoto",
     }),
   summary: z.string().trim().min(10).max(2000),

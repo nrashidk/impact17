@@ -4,7 +4,7 @@ import { useActionState, useId, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { useTranslations } from "next-intl";
 import { Star } from "lucide-react";
-import { useUploadThing } from "@/lib/uploadthing";
+import { upload } from "@vercel/blob/client";
 import { submitAction, type SubmitState } from "./submit-action";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -75,38 +75,46 @@ export function SubmitForm({
   const [uploadError, setUploadError] = useState<string | null>(null);
   // TODO: revert to generic message after debugging — temporary diagnostic UI
   const [uploadErrorDetail, setUploadErrorDetail] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [rating, setRating] = useState(0);
   const fileInputId = useId();
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const { startUpload, isUploading } = useUploadThing("submissionPhoto", {
-    onClientUploadComplete: (res) => {
-      const url = res?.[0]?.ufsUrl ?? "";
-      setPhotoUrl(url);
-      setUploadError(null);
-      setUploadErrorDetail(null);
-    },
-    onUploadError: (error) => {
-      // Surface the real error for debugging; keep the UI message friendly.
-      const cause = (error as { cause?: unknown })?.cause;
-      const data = (error as { data?: unknown })?.data;
-      console.error("[uploadthing] client upload error", {
-        message: error?.message,
-        cause,
-        data,
-        error,
+  const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+  const MAX_SIZE = 8 * 1024 * 1024;
+
+  async function handleFile(file: File) {
+    setUploadError(null);
+    setUploadErrorDetail(null);
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      setUploadError(t("submit.uploadFailed"));
+      setUploadErrorDetail(`Unsupported file type: ${file.type || "unknown"}`);
+      return;
+    }
+    if (file.size > MAX_SIZE) {
+      setUploadError(t("submit.uploadFailed"));
+      setUploadErrorDetail(`File too large: ${(file.size / 1024 / 1024).toFixed(1)}MB (max 8MB)`);
+      return;
+    }
+    setIsUploading(true);
+    try {
+      const blob = await upload(file.name, file, {
+        access: "public",
+        handleUploadUrl: "/api/upload",
+        contentType: file.type,
       });
+      setPhotoUrl(blob.url);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error("[blob] client upload error", error);
       setUploadError(t("submit.uploadFailed"));
       // TODO: revert to generic message after debugging — temporary diagnostic UI
-      const detailParts = [
-        error?.message,
-        cause ? `cause: ${String(cause)}` : null,
-        data ? `data: ${JSON.stringify(data)}` : null,
-      ].filter(Boolean);
-      setUploadErrorDetail(detailParts.join(" | ") || "Unknown upload error");
+      setUploadErrorDetail(message || "Unknown upload error");
       setPhotoUrl("");
-    },
-  });
+    } finally {
+      setIsUploading(false);
+    }
+  }
 
   return (
     <form action={formAction} className="space-y-6" noValidate>
@@ -122,15 +130,11 @@ export function SubmitForm({
           id={fileInputId}
           ref={fileRef}
           type="file"
-          accept="image/*"
+          accept="image/jpeg,image/png,image/webp"
           disabled={isUploading}
           onChange={(e) => {
             const file = e.target.files?.[0];
-            if (file) {
-              setUploadError(null);
-              setUploadErrorDetail(null);
-              void startUpload([file]);
-            }
+            if (file) void handleFile(file);
           }}
         />
         <p className="text-xs text-zinc-500">{t("submit.photoHint")}</p>
