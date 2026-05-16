@@ -1,36 +1,22 @@
-// TEMPORARY DIAGNOSTIC — delete after token issue resolved
+// TEMPORARY PUBLIC DIAGNOSTIC — MUST be deleted entirely after token issue resolved
 //
 // Reports structural diagnostics about UPLOADTHING_TOKEN in the deployed
-// environment WITHOUT exposing the secret value. Protected by the same
-// Bearer secret as /api/admin/seed.
+// environment WITHOUT exposing the secret value. Temporarily public, gated
+// only by a hardcoded query-param so it's not trivially discoverable;
+// returns 404 (looks absent) when the guard is missing.
 
 import { NextResponse, type NextRequest } from "next/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-function unauthorized() {
-  return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-}
+const GUARD = "impact17diag2026";
 
 type TokenShape = { apiKey: unknown; appId: unknown; regions: unknown };
 
 export async function GET(request: NextRequest) {
-  const expected = process.env.ADMIN_SEED_SECRET;
-  if (!expected || expected.length === 0) {
-    return NextResponse.json(
-      { error: "ADMIN_SEED_SECRET is not configured on the server" },
-      { status: 500 },
-    );
-  }
-
-  const header = request.headers.get("authorization");
-  if (!header || !header.startsWith("Bearer ")) {
-    return unauthorized();
-  }
-  const bearer = header.slice("Bearer ".length).trim();
-  if (bearer !== expected) {
-    return unauthorized();
+  if (request.nextUrl.searchParams.get("check") !== GUARD) {
+    return new NextResponse("Not found", { status: 404 });
   }
 
   const raw = process.env.UPLOADTHING_TOKEN;
