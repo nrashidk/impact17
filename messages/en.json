@@ -45,6 +45,33 @@
     "notFound": "Not found",
     "points": "{count, plural, =1 {# point} other {# points}}"
   },
+  "submit": {
+    "title": "Submit: {action}",
+    "intro": "Upload your photo proof and tell us how it went. Your submission will be reviewed before it counts.",
+    "photo": "Photo proof",
+    "photoHint": "One image, up to 8MB. JPG, PNG, or WebP.",
+    "uploading": "Uploading…",
+    "uploaded": "Photo uploaded.",
+    "uploadFailed": "Upload failed. Please try a different image.",
+    "summary": "What did you do?",
+    "reflection": "Your reflection",
+    "enjoyment": "What did you enjoy? (optional)",
+    "rating": "How would you rate this action?",
+    "ratingLabel": "Star rating, 1 to 5",
+    "ratingStar": "{n, plural, =1 {# star} other {# stars}}",
+    "submitButton": "Submit for verification",
+    "successTitle": "Submitted",
+    "successBody": "Thanks! Your submission is pending verification. You'll see it update once it's reviewed.",
+    "backToSdg": "Back to the SDG",
+    "errors": {
+      "notSignedIn": "You need to be signed in to submit.",
+      "profileIncomplete": "Finish setting up your profile before submitting.",
+      "actionNotFound": "That action could not be found.",
+      "alreadyInFlight": "You already have a submission for this action in progress.",
+      "invalidPhoto": "Please upload a photo before submitting.",
+      "validation": "Please check your entries and try again."
+    }
+  },
   "auth": {
     "signUp": {
       "title": "Create your account",
