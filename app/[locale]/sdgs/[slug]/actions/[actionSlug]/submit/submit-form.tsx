@@ -73,6 +73,8 @@ export function SubmitForm({
   );
   const [photoUrl, setPhotoUrl] = useState("");
   const [uploadError, setUploadError] = useState<string | null>(null);
+  // TODO: revert to generic message after debugging — temporary diagnostic UI
+  const [uploadErrorDetail, setUploadErrorDetail] = useState<string | null>(null);
   const [rating, setRating] = useState(0);
   const fileInputId = useId();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -82,16 +84,26 @@ export function SubmitForm({
       const url = res?.[0]?.ufsUrl ?? "";
       setPhotoUrl(url);
       setUploadError(null);
+      setUploadErrorDetail(null);
     },
     onUploadError: (error) => {
       // Surface the real error for debugging; keep the UI message friendly.
+      const cause = (error as { cause?: unknown })?.cause;
+      const data = (error as { data?: unknown })?.data;
       console.error("[uploadthing] client upload error", {
         message: error?.message,
-        cause: (error as { cause?: unknown })?.cause,
-        data: (error as { data?: unknown })?.data,
+        cause,
+        data,
         error,
       });
       setUploadError(t("submit.uploadFailed"));
+      // TODO: revert to generic message after debugging — temporary diagnostic UI
+      const detailParts = [
+        error?.message,
+        cause ? `cause: ${String(cause)}` : null,
+        data ? `data: ${JSON.stringify(data)}` : null,
+      ].filter(Boolean);
+      setUploadErrorDetail(detailParts.join(" | ") || "Unknown upload error");
       setPhotoUrl("");
     },
   });
@@ -116,6 +128,7 @@ export function SubmitForm({
             const file = e.target.files?.[0];
             if (file) {
               setUploadError(null);
+              setUploadErrorDetail(null);
               void startUpload([file]);
             }
           }}
@@ -135,6 +148,15 @@ export function SubmitForm({
           <p className="text-xs font-medium text-destructive" role="alert">
             {uploadError}
           </p>
+        )}
+        {/* TODO: revert to generic message after debugging — temporary diagnostic UI */}
+        {uploadErrorDetail && (
+          <pre
+            className="mt-2 overflow-x-auto whitespace-pre-wrap rounded-md border border-destructive/40 bg-destructive/10 p-3 text-xs text-destructive"
+            role="alert"
+          >
+            {uploadErrorDetail}
+          </pre>
         )}
       </div>
 

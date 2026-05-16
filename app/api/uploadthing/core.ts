@@ -60,14 +60,29 @@ export const ourFileRouter = {
       return { userId: user.id };
     })
     .onUploadComplete(async ({ metadata, file }) => {
+      console.log("[uploadthing] onUploadComplete START");
       try {
+        // Log only the shape, never secrets. metadata is { userId }; file is
+        // UploadThing's descriptor (key/name/size/type/ufsUrl).
         console.log(
-          `[uploadthing] onUploadComplete: userId=${metadata.userId} key=${file.key} url=${file.ufsUrl}`,
+          `[uploadthing] onUploadComplete keys: metadata=[${Object.keys(metadata ?? {}).join(
+            ",",
+          )}] file=[${Object.keys(file ?? {}).join(",")}]`,
         );
-        return { uploadedBy: metadata.userId, url: file.ufsUrl };
+        console.log(
+          `[uploadthing] onUploadComplete fields: userId=${metadata?.userId} key=${file?.key} name=${file?.name} size=${file?.size} type=${file?.type}`,
+        );
+
+        // This handler intentionally does NOT touch the database — submission
+        // persistence is the separate `submitAction` server action. It only
+        // returns a JSON-serialisable object back to the client.
+        const result = { uploadedBy: metadata.userId, url: file.ufsUrl };
+        console.log(`[uploadthing] onUploadComplete SUCCESS url=${file.ufsUrl}`);
+        return result;
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
-        console.error(`[uploadthing] onUploadComplete error: ${message}`);
+        const stack = err instanceof Error ? err.stack : undefined;
+        console.error(`[uploadthing] onUploadComplete THREW: ${message}\n${stack ?? "(no stack)"}`);
         throw err;
       }
     }),
