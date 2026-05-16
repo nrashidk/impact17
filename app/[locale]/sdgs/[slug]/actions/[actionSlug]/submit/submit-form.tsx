@@ -80,10 +80,21 @@ export function SubmitForm({
   const { startUpload, isUploading } = useUploadThing("submissionPhoto", {
     onClientUploadComplete: (res) => {
       const url = res?.[0]?.ufsUrl ?? "";
+      console.log("[uploadthing] client upload complete", {
+        count: res?.length ?? 0,
+        url,
+      });
       setPhotoUrl(url);
       setUploadError(null);
     },
-    onUploadError: () => {
+    onUploadError: (error) => {
+      // Surface the real error for debugging; keep the UI message friendly.
+      console.error("[uploadthing] client upload error", {
+        message: error?.message,
+        cause: (error as { cause?: unknown })?.cause,
+        data: (error as { data?: unknown })?.data,
+        error,
+      });
       setUploadError(t("submit.uploadFailed"));
       setPhotoUrl("");
     },
