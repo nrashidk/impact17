@@ -121,8 +121,12 @@ export default async function ActionDetailPage({
 
       <section className="px-6 pb-16">
         <div className="mx-auto max-w-3xl">
-          <Button size="lg" disabled={!signedIn} className="w-full sm:w-auto">
-            {signedIn ? t("action.submitThisAction") : t("action.signInToSubmit")}
+          <Button size="lg" asChild className="w-full sm:w-auto">
+            <Link
+              href={signedIn ? `/sdgs/${action.sdg.slug}/actions/${action.slug}/submit` : "/signin"}
+            >
+              {signedIn ? t("action.submitThisAction") : t("action.signInToSubmit")}
+            </Link>
           </Button>
         </div>
       </section>
