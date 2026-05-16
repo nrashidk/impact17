@@ -13,6 +13,9 @@
   "prisma": {
     "seed": "tsx prisma/seed.ts"
   },
+  "overrides": {
+    "effect": "3.17.7"
+  },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.96.0",
     "@auth/prisma-adapter": "^2.11.2",
