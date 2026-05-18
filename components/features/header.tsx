@@ -22,6 +22,12 @@ export async function Header({ locale }: { locale: string }) {
         <div className="flex items-center gap-3">
           {session?.user ? (
             <>
+              <Link
+                href="/points"
+                className="text-sm font-medium text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-50"
+              >
+                {t("points")}
+              </Link>
               <span className="text-sm text-zinc-700 dark:text-zinc-300">
                 {session.user.name ?? session.user.username ?? session.user.email}
               </span>
