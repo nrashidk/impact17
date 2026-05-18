@@ -30,6 +30,13 @@ enum SubmissionStatus {
   IN_REVIEW
 }
 
+enum ModerationStatus {
+  PENDING
+  CLEAN
+  FLAGGED
+  ERROR
+}
+
 enum ReportStatus {
   OPEN
   REVIEWED
@@ -158,6 +165,10 @@ model Submission {
   aiMatch       Boolean?
   aiConfidence  Float?
   aiReason      String?
+  modStatus     ModerationStatus @default(PENDING)
+  modCategory   String?
+  modReason     String?
+  processingStartedAt DateTime?
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
 

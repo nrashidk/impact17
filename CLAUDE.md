@@ -131,9 +131,11 @@ These are decisions already locked. Do not relitigate or "improve" them without 
 
 ## Current build phase
 
-**Phase 1 — Foundation (current).** Establish project, schema, content import, one working SDG page end-to-end with read-only browsing. No auth yet, no submission yet, no AI yet.
+**Status: Phase 3 in progress** (submission flow → AI verification + content moderation → badges/points → dashboard). Phases 1 and 2 are shipped. Deviations from the original plan, accepted and on the record: auth uses NextAuth credentials + Google (not magic-link); username is collected in a post-signup step; photo storage uses Vercel Blob (not UploadThing/S3) after UploadThing failed repeatedly on Vercel; AI photo verification + content moderation run as one combined Claude vision call scheduled post-redirect via `after()`.
 
-**Phase 2 — Auth + Submissions.** Sign-up with age gate, magic-link auth, action submission form, photo upload, Claude vision verification, badge issuance.
+**Phase 1 — Foundation.** ✅ Done. Project, schema, content import, read-only SDG browsing.
+
+**Phase 2 — Auth + Submissions.** ✅ Done. Sign-up with age gate, credentials + Google auth, action submission form, photo upload (Vercel Blob), Claude vision verification + moderation. Badge issuance is the remaining Phase 3 sub-step.
 
 **Phase 3 — Leaderboard + Profiles.** Points calculation, weekly + all-time leaderboards, public profile pages, badge wall.
 
