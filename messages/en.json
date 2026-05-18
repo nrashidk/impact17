@@ -63,6 +63,30 @@
     "successTitle": "Submitted",
     "successBody": "Thanks! Your submission is pending verification. You'll see it update once it's reviewed.",
     "backToSdg": "Back to the SDG",
+    "tryAgain": "Edit and resubmit",
+    "status": {
+      "pendingTitle": "Submitted — checking it now",
+      "pendingBody": "Your submission is being verified. Refresh this page in a moment to see the result.",
+      "approvedTitle": "Verified",
+      "approvedBody": "Your submission passed verification. Nice work!",
+      "inReviewTitle": "Pending manual review",
+      "inReviewBody": "We couldn't auto-verify this one with enough confidence, so it's queued for a human to check.",
+      "rejectedTitle": "Not accepted",
+      "rejectedVerification": "We couldn't verify the photo proves this action: {reason}",
+      "rejectedModerationGeneric": "This submission was flagged by our content checks and can't be accepted.",
+      "rejectedModerationReason": "This submission was flagged for {category} and can't be accepted."
+    },
+    "modCategory": {
+      "sexual": "sexual content",
+      "violence": "graphic violence",
+      "hate": "hateful content",
+      "harassment": "harassment",
+      "self_harm": "self-harm content",
+      "illegal": "illegal activity",
+      "spam": "spam",
+      "pii": "exposed personal information",
+      "other": "inappropriate content"
+    },
     "errors": {
       "notSignedIn": "You need to be signed in to submit.",
       "profileIncomplete": "Finish setting up your profile before submitting.",

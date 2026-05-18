@@ -2,8 +2,10 @@
 
 import { z } from "zod";
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
+import { reviewSubmission } from "@/lib/submission-review";
 
 const submitSchema = z.object({
   actionId: z.string().min(1),
@@ -72,7 +74,7 @@ export async function submitAction(
   });
   if (existing) return { error: "alreadyInFlight" };
 
-  await prisma.submission.create({
+  const created = await prisma.submission.create({
     data: {
       userId: user.id,
       actionId: action.id,
@@ -84,7 +86,12 @@ export async function submitAction(
       rating: parsed.data.rating,
       status: "PENDING",
     },
+    select: { id: true },
   });
+
+  // Run AI verification + content moderation after the response is sent.
+  // The submission stays PENDING until this completes.
+  after(() => reviewSubmission(created.id));
 
   redirect(`/sdgs/${parsed.data.sdgSlug}/actions/${parsed.data.actionSlug}/submit/success`);
 }
