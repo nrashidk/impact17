@@ -54,6 +54,12 @@ const credentialsSchema = z.object({
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
+  // Derive the base URL from the incoming request host (X-Forwarded-Host on
+  // Vercel) instead of a pinned env var, so a preview deployment keeps users
+  // on its own preview domain after auth instead of bouncing to production.
+  // (Auth.js still honours AUTH_URL/NEXTAUTH_URL if set, so that env var must
+  // be scoped to the Production environment only — see PR notes.)
+  trustHost: true,
   pages: {
     signIn: "/signin",
   },
@@ -88,6 +94,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
+    // Keep post-auth redirects on the originating deployment. `baseUrl` is
+    // derived from the request (trustHost) when AUTH_URL/NEXTAUTH_URL is not
+    // pinned, so relative/same-origin targets stay on the preview or prod
+    // domain the user is actually on; anything off-origin falls back to the
+    // request's own base URL rather than a hardcoded host.
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      try {
+        if (new URL(url).origin === baseUrl) return url;
+      } catch {
+        // fall through
+      }
+      return baseUrl;
+    },
     async signIn({ user }) {
       if (!user.id) return true;
       const dbUser = await prisma.user.findUnique({
