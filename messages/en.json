@@ -31,6 +31,21 @@
     "approvedActions": "Verified actions",
     "completedSdgs": "Completed SDGs"
   },
+  "review": {
+    "title": "Review queue",
+    "count": "{n, plural, =0 {Nothing to review} =1 {# submission awaiting review} other {# submissions awaiting review}}",
+    "empty": "The queue is empty.",
+    "photoAlt": "Submitted photo",
+    "action": "Claimed action",
+    "reflection": "Reflection",
+    "aiReason": "AI reason",
+    "confidence": "confidence",
+    "moderation": "Moderation",
+    "approve": "Approve",
+    "reject": "Reject",
+    "reasonLabel": "Rejection reason",
+    "reasonPlaceholder": "Reason for rejection (required)"
+  },
   "sdg": {
     "actionCount": "{count, plural, =1 {# action} other {# actions}}",
     "backToAll": "Back to all SDGs",
