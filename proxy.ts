@@ -8,6 +8,14 @@ const intl = createMiddleware(routing);
 export default auth((req) => {
   const path = req.nextUrl.pathname;
 
+  // TEMP-DIAGNOSTIC (remove after NEXTAUTH_URL preview leak is resolved):
+  // reveals the runtime origin-swap inputs on the bouncing preview.
+  console.log(
+    `[proxy-diag] host=${req.headers.get("host")} xfh=${req.headers.get(
+      "x-forwarded-host",
+    )} nextUrl=${req.nextUrl.href} NEXTAUTH_URL=${process.env.NEXTAUTH_URL} AUTH_URL=${process.env.AUTH_URL} VERCEL_ENV=${process.env.VERCEL_ENV}`,
+  );
+
   // If signed in but profile incomplete (no DOB or no username — the state
   // right after a first Google OAuth sign-in), force /signup/complete.
   if (req.auth?.user) {
