@@ -6,7 +6,7 @@ This file is read by Claude Code at the start of every session. It defines what 
 
 ## What this project is
 
-Impact17 is a bilingual (Arabic/English) public consumer web platform where users complete real-world UN Sustainable Development Goal (SDG) actions, submit photo proof, earn badges, climb leaderboards, and engage socially. The platform serves UAE users primarily; content is UAE-localised throughout.
+Impact17 is a bilingual (Arabic/English) public consumer web platform where users complete real-world UN Sustainable Development Goal (SDG) actions, submit photo proof, earn badges, track their own progress, and (longer-term) engage socially. The platform serves UAE users primarily; content is UAE-localised throughout. (Leaderboards and any peer-visible standing are an eventual goal but are gated behind the human-review system — see "Scoring & leaderboard (locked)"; that gate is authoritative over this intro.)
 
 **Core user loop:** Land on the site → see all 17 SDGs → pick an SDG → pick one of 10 actions → read "how to" steps → do it in real life → submit photo + summary + reflection + enjoyment + 1-5 star rating → AI verifies photo → earn action badge → complete all 10 actions in an SDG → earn SDG badge + 200-point bonus → complete all 17 SDGs → headline achievement.
 
@@ -78,11 +78,11 @@ Single Next.js repo. Standard App Router layout:
 These are decisions already locked. Do not relitigate or "improve" them without asking.
 
 1. **All 17 SDGs in v1.** 170 total actions, 10 per SDG. Catalogue is locked content (see `/content` folder).
-2. **AI photo verification on every submission.** Use Claude vision via the Anthropic API. Match the photo against the action description; return JSON with `match`, `confidence`, `reason`. High confidence → auto-approve, medium → manual review queue, low → reject with reason.
+2. **AI photo verification on every submission.** Use Claude vision via the Anthropic API. Match the photo against the action description; return JSON with `match`, `confidence`, `reason`. High confidence → auto-approve, medium → `IN_REVIEW`, low / no-match → reject with reason. **Reality check: there is NO manual review system yet.** `IN_REVIEW` is a parked terminal state with no admin UI — medium-confidence, low-confidence-but-matched, and error/fail-closed cases all land there and stay until the human-review tooling (Phase 5) is built. Do not describe `IN_REVIEW` as a working queue.
 3. **Adults-only at launch.** Age gate at sign-up: date of birth required, under-18 cannot register. Parental consent flow comes in v1.5 — DO NOT build it now.
 4. **Effort-weighted points:** Easy = 5, Medium = 10, Hard = 20. SDG completion bonus = 200.
 5. **One action = one SDG.** Each action has exactly one primary SDG. Do not multi-credit.
-6. **Hybrid moderation:** EVERY photo and EVERY reflection runs through Claude API for content moderation before becoming visible. Plus user reports. Plus a manual review queue in `/admin`.
+6. **Hybrid moderation:** EVERY photo and EVERY reflection runs through the Claude API for content moderation at submission time (combined with verification), before it could ever become public. Note: nothing user-generated is public yet — public profiles, public reflections, and any peer-visible surface are gated behind the human-review system (see "Scoring & leaderboard (locked)" and Phase plan below; that gate is authoritative). User reports and the manual review queue in `/admin` are Phase 5 — NOT built yet.
 7. **Bilingual at launch.** English and Arabic. Every UI string lives in `/messages`. Arabic RTL must work everywhere. Test layouts in both.
 8. **Public profiles, public reflections, full social** (comments, follows, likes) — but with full safety tooling in v1: block, mute, report, abuse policy page.
 9. **Perceptual hashing** on every uploaded photo to block reuse. Use `imghash` or equivalent.
@@ -96,6 +96,7 @@ These are decisions already locked. Do not relitigate or "improve" them without 
 - **A public or peer-visible leaderboard is gated behind the human-review system and must NOT ship before that system exists.** No public leaderboard, peer ranking, top-user highlights, rank-implying badges, points in public profiles, or notifications referencing standing. (This intentionally defers the "leaderboard" part of the original Phase 3 plan — recorded as an accepted deviation.)
 - **The admin score view is internal-only** (secret-gated tooling) and must not feed, surface, or leak into any user-visible element.
 - **Score must be recomputable from APPROVED submissions**, so a fraudulent submission's points are revoked automatically when its status changes. Never a one-way / incrementing counter.
+- **UNVERIFIED: the SDG completion bonus (+200) revoke path is untested.** Test A (single-action points revoke) is confirmed passing. Test B — that the +200 bonus is removed when an in-SDG submission flips APPROVED→REJECTED and the SDG is no longer complete — has NOT been run and MUST pass before any leaderboard or status-bearing feature ships.
 
 ---
 
@@ -146,15 +147,17 @@ These are decisions already locked. Do not relitigate or "improve" them without 
 
 **Phase 2 — Auth + Submissions.** ✅ Done. Sign-up with age gate, credentials + Google auth, action submission form, photo upload (Vercel Blob), Claude vision verification + moderation. Badge issuance is the remaining Phase 3 sub-step.
 
-**Phase 3 — Leaderboard + Profiles.** Points calculation, weekly + all-time leaderboards, public profile pages, badge wall.
+**Phase 3 — Private progress (current).** Points engine (done), private own-score view (done, `/points`), badge issuance, and a private user dashboard/badge wall. NO public leaderboard, NO peer-visible ranking, NO public profiles in this phase — all of that is gated and comes only after Phase 5. Remaining buildable Phase 3 work: badge issuance + private dashboard. The +200 SDG-bonus revoke path (Test B) must be verified before any status-bearing feature.
 
-**Phase 4 — Social.** Comments, follows, likes, block, mute, report flow, abuse policy.
+**Phase 4 — Human review + moderation tooling (the gate).** Admin review/moderation queue UI so `IN_REVIEW` submissions and reported content are actually actionable; content-report flow; perceptual hashing for reused photos. **This is the gate: nothing public/peer-visible and no leaderboard may ship until this exists and is tested.**
 
-**Phase 5 — Moderation tooling.** Admin queue UI, content moderation API integration on every reflection and photo, perceptual hashing for reused photos.
+**Phase 5 — Public leaderboard + public profiles.** Only after the Phase 4 human-review system exists and is verified: weekly + all-time leaderboards, public profile pages, public badge walls, peer-visible standing.
 
-**Phase 6 — Polish + soft launch.** Arabic translation pass, accessibility audit, performance pass, soft launch.
+**Phase 6 — Social.** Comments, follows, likes, block, mute, abuse policy — built on top of the review system.
 
-Do not skip phases or jump ahead. Each phase ships, gets tested, then the next phase starts.
+**Phase 7 — Polish + soft launch.** Arabic translation pass, accessibility audit, performance pass, soft launch.
+
+Do not skip phases or jump ahead. The next buildable work is private-only (badges + private dashboard) — NOT the leaderboard. Public leaderboard and any peer-visible standing come strictly AFTER the human-review system (Phase 4) is built and tested. Each phase ships, gets tested, then the next phase starts.
 
 ---
 
