@@ -90,6 +90,15 @@ These are decisions already locked. Do not relitigate or "improve" them without 
 
 ---
 
+## Scoring & leaderboard (locked)
+
+- **Points engine and private/own-score display are in scope.** A signed-in user may see ONLY their own total — no rank, no comparison, no peer data.
+- **A public or peer-visible leaderboard is gated behind the human-review system and must NOT ship before that system exists.** No public leaderboard, peer ranking, top-user highlights, rank-implying badges, points in public profiles, or notifications referencing standing. (This intentionally defers the "leaderboard" part of the original Phase 3 plan — recorded as an accepted deviation.)
+- **The admin score view is internal-only** (secret-gated tooling) and must not feed, surface, or leak into any user-visible element.
+- **Score must be recomputable from APPROVED submissions**, so a fraudulent submission's points are revoked automatically when its status changes. Never a one-way / incrementing counter.
+
+---
+
 ## Code conventions
 
 - **TypeScript strict mode.** No `any` without justification in a comment.

@@ -9,6 +9,7 @@
     "sdgs": "SDGs",
     "leaderboard": "Leaderboard",
     "profile": "Profile",
+    "points": "My points",
     "signIn": "Sign in",
     "signUp": "Sign up",
     "signOut": "Sign out"
@@ -20,6 +21,15 @@
   },
   "footer": {
     "tagline": "Verified action on the UN Sustainable Development Goals — UAE-localised."
+  },
+  "points": {
+    "title": "Your points",
+    "subtitle": "Earned from your verified actions. Only you can see this.",
+    "totalAria": "You have {total} points",
+    "actionPoints": "Action points",
+    "sdgBonus": "SDG completion bonus",
+    "approvedActions": "Verified actions",
+    "completedSdgs": "Completed SDGs"
   },
   "sdg": {
     "actionCount": "{count, plural, =1 {# action} other {# actions}}",
