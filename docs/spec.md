@@ -8,7 +8,7 @@ This document supersedes all previous Impact17 plans.
 
 ## 1. What Impact17 is
 
-A bilingual (Arabic/English) public consumer web platform for taking verified action on the 17 UN Sustainable Development Goals. Users complete real-world sustainability actions, submit photo proof, earn badges, climb leaderboards, and engage socially. Launched and maintained personally by Nasser.
+A bilingual (Arabic/English) public consumer web platform for taking verified action on the 17 UN Sustainable Development Goals. Users complete real-world sustainability actions, submit photo proof, earn badges, climb leaderboards, and engage socially. Launched and maintained personally by Nasser. *(Note: "climb leaderboards" and "engage socially" are gated — see the ACCEPTED DEVIATION (2026-05-19) notes in §2 and §8; the human-review system is a launch prerequisite and public/peer surfaces follow it.)*
 
 **Core loop:**
 Landing page (SDG wheel) → scroll to grid of 17 SDGs → click an SDG → see 10 actions → click an action → read "how to" steps → do it in real life → submit photo + summary + reflection + what you enjoyed + star rating → AI verifies → earn action badge. Complete all 10 actions in an SDG → SDG badge + 200-point bonus. Complete all 17 SDGs → headline achievement.
@@ -44,16 +44,20 @@ Landing page (SDG wheel) → scroll to grid of 17 SDGs → click an SDG → see 
 ### Social & engagement
 | Area | Decision |
 |---|---|
-| Profiles | Public profiles with badge walls |
+| Profiles | Public profiles with badge walls — **SUPERSEDED, see ACCEPTED DEVIATION (2026-05-19) below** |
 | Reflections | Public |
 | Social features | Full social: comments, follows, likes |
-| Leaderboard | Weekly + all-time, both visible from launch |
+| Leaderboard | Weekly + all-time, both visible from launch — **SUPERSEDED, see ACCEPTED DEVIATION (2026-05-19) below** |
 | Notifications | On (badge earned, weekly progress, social activity) |
+
+> **ACCEPTED DEVIATION (2026-05-19):** The original intent above is retained for the record but is superseded. Public leaderboard, peer-visible standing/ranking, and public profiles (incl. public reflections and public badge walls) are **deferred until a human-review system exists and has been tested. That human-review system is a LAUNCH PREREQUISITE — a blocker that must be built and pass testing before launch, not a post-launch phase.** The points engine and a private, own-score-only view are in scope now; everything peer-visible is gated behind the human-review system. This is a deliberate, safety-driven decision and overrides the "visible from launch" intent. Authoritative cross-reference: CLAUDE.md → "Scoring & leaderboard (locked)" and the phase plan.
 
 ### Moderation & safety
 | Area | Decision |
 |---|---|
-| Moderation system | Hybrid: AI pre-screen on every photo + reflection before visible, user reports, manual review queue for edge cases |
+| Moderation system | Hybrid: AI pre-screen on every photo + reflection before visible, user reports, manual review queue for edge cases — **SUPERSEDED in part, see ACCEPTED DEVIATION (2026-05-19) below** |
+
+> **ACCEPTED DEVIATION (2026-05-19):** The AI pre-screen on every photo + reflection at submission time is built and stands. However, the **user-report flow and the manual review queue are NOT yet built** — the original wording implies they exist; they do not. AI-uncertain submissions sit in a parked `IN_REVIEW` state with no admin UI. Building this human-review / moderation queue is the **launch-blocking prerequisite**: it must exist and be tested before launch and before any public/peer-visible surface or leaderboard ships. Authoritative cross-reference: CLAUDE.md → Critical Product Rule 2 & 6 and the phase plan.
 
 ### Account & infrastructure
 | Area | Decision |
@@ -94,6 +98,8 @@ Full social (comments, follows, likes) ships with full safety tooling in v1:
 6. **Public profile** — badge wall, action count, public reflections, follow button
 7. **Social/activity feed** — comments, likes, follows activity
 8. **Moderation queue** (admin, Nasser only) — AI-flagged content + user reports
+
+*Page-types ordering note (2026-05-19): page 8 (the human-review / moderation queue) is a **launch prerequisite** and must ship before pages 4's leaderboard preview, 5 (Leaderboard), 6 (Public profile), and 7 (Social feed) — all of which are gated per the ACCEPTED DEVIATION notes in §2 and §8. The dashboard (page 4) ships in a private own-score-only form without the leaderboard preview until then.*
 
 ---
 
@@ -145,13 +151,15 @@ These have been flagged and accepted, not solved:
 
 If the goal is to launch *and survive*:
 
-1. **v1 (launch):** 17 SDGs, AI verification, badges, leaderboard, public profiles, adults-only. NO social features yet.
+1. **v1 (launch):** 17 SDGs, AI verification, badges, leaderboard, public profiles, adults-only. NO social features yet. — **SUPERSEDED, see ACCEPTED DEVIATION (2026-05-19) below**
 2. **v1.5 (4–6 weeks post-launch):** Parental consent flow + minor users, once core is stable.
 3. **v2 (validated demand):** Full social — comments, follows, likes — with safety tooling, once there are enough users for social to matter.
 
 This launches in ~6 weeks instead of ~11, validates demand before the expensive social build, and defers the moderation burden until there are users to moderate. The vision is unchanged — only the order is.
 
 You've chosen the all-at-once path. This section is here so the alternative is on the record.
+
+> **ACCEPTED DEVIATION (2026-05-19):** v1 launch scope is narrowed and reordered. Leaderboard and public profiles are **removed from v1**. The **human-review / moderation queue is promoted to a v1 launch prerequisite** — it is the blocker that unblocks launch, NOT a post-launch phase. v1 ships with: 17 SDGs, AI verification + content moderation pre-screen, badges, a **private own-score-only** points view, and the human-review system itself — no public leaderboard, no peer-visible standing, no public profiles until that human-review system exists and has been tested (which gates them, and they may then follow). The original sequencing above is kept for the record but this note supersedes the v1 line. Authoritative cross-reference: CLAUDE.md → "Scoring & leaderboard (locked)" and phase plan; that gate governs.
 
 ---
 
