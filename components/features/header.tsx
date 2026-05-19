@@ -14,14 +14,6 @@ export async function Header({ locale }: { locale: string }) {
         <Link href="/" className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
           Impact17
         </Link>
-        <nav className="hidden sm:flex items-center gap-3">
-          <Link
-            href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-          >
-            {t("home")}
-          </Link>
-        </nav>
         <div className="flex items-center gap-3">
           {session?.user ? (
             <>
