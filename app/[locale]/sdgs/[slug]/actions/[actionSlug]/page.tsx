@@ -145,7 +145,7 @@ export default async function ActionDetailPage({
         <div className="mx-auto max-w-3xl">
           {approvedSubmission ? (
             <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-5 dark:border-emerald-900/60 dark:bg-emerald-950/40">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6 sm:rtl:flex-row-reverse">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
                 <div className="flex flex-1 items-start gap-3">
                   <CheckCircle2
                     className="mt-0.5 h-6 w-6 shrink-0 text-emerald-600 dark:text-emerald-400"
