@@ -58,7 +58,15 @@
     "submitThisAction": "Submit this action",
     "backToSdg": "Back to {name}",
     "verificationPhysical": "Photo verification: physical activity",
-    "verificationArtefact": "Photo verification: created artefact"
+    "verificationArtefact": "Photo verification: created artefact",
+    "completed": {
+      "badge": "Completed",
+      "heading": "You've completed this action",
+      "pointsLabel": "Points earned:",
+      "dateLabel": "Completed on:",
+      "photoAlt": "Your submitted photo",
+      "viewPhoto": "View your submitted photo"
+    }
   },
   "effort": {
     "easy": "Easy",

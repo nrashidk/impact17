@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import { ArrowLeft, Camera, FileText } from "lucide-react";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { ArrowLeft, Camera, CheckCircle2, FileText } from "lucide-react";
+import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -45,13 +45,35 @@ export default async function ActionDetailPage({
   if (!action) notFound();
 
   const session = await auth();
+  const userId = session?.user?.id;
   const signedIn = Boolean(session?.user);
+
+  // The "completed" panel is gated on at least one APPROVED submission. If
+  // there's more than one (shouldn't happen normally), show the oldest one —
+  // matches the points-engine dedupe behaviour (the row that originally
+  // earned the points).
+  const approvedSubmission = userId
+    ? await prisma.submission.findFirst({
+        where: { userId, actionId: action.id, status: "APPROVED" },
+        orderBy: { createdAt: "asc" },
+        select: { createdAt: true, photoUrl: true },
+      })
+    : null;
 
   const sdgName = localeText(action.sdg.nameEn, action.sdg.nameAr, locale);
   const title = localeText(action.titleEn, action.titleAr, locale);
   const steps = localeJsonArray(action.howToStepsEn, action.howToStepsAr, locale);
   const prompts = localeJsonArray(action.reflectionPromptsEn, action.reflectionPromptsAr, locale);
   const isPhysical = action.verificationType === "PHOTO_PHYSICAL";
+
+  const format = await getFormatter();
+  const completedDate = approvedSubmission
+    ? format.dateTime(approvedSubmission.createdAt, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : null;
 
   return (
     <div className="flex flex-col">
@@ -121,13 +143,57 @@ export default async function ActionDetailPage({
 
       <section className="px-6 pb-16">
         <div className="mx-auto max-w-3xl">
-          <Button size="lg" asChild className="w-full sm:w-auto">
-            <Link
-              href={signedIn ? `/sdgs/${action.sdg.slug}/actions/${action.slug}/submit` : "/signin"}
-            >
-              {signedIn ? t("action.submitThisAction") : t("action.signInToSubmit")}
-            </Link>
-          </Button>
+          {approvedSubmission ? (
+            <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-5 dark:border-emerald-900/60 dark:bg-emerald-950/40">
+              <div className="flex items-start gap-3">
+                <CheckCircle2
+                  className="mt-0.5 h-6 w-6 shrink-0 text-emerald-600 dark:text-emerald-400"
+                  aria-hidden
+                />
+                <div className="flex-1">
+                  <h2 className="text-xl font-bold tracking-tight text-emerald-900 dark:text-emerald-100">
+                    {t("action.completed.heading")}
+                  </h2>
+                  <dl className="mt-3 space-y-1 text-sm text-emerald-900/90 dark:text-emerald-100/90">
+                    <div className="flex flex-wrap gap-x-2">
+                      <dt className="font-medium">{t("action.completed.pointsLabel")}</dt>
+                      <dd>{t("common.points", { count: action.points })}</dd>
+                    </div>
+                    <div className="flex flex-wrap gap-x-2">
+                      <dt className="font-medium">{t("action.completed.dateLabel")}</dt>
+                      <dd>{completedDate}</dd>
+                    </div>
+                  </dl>
+                </div>
+              </div>
+              <div className="mt-4">
+                <a
+                  href={approvedSubmission.photoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block overflow-hidden rounded-md border border-emerald-200 bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:border-emerald-900/60 dark:bg-zinc-900"
+                  aria-label={t("action.completed.viewPhoto")}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={approvedSubmission.photoUrl}
+                    alt={t("action.completed.photoAlt")}
+                    className="h-24 w-24 object-cover sm:h-32 sm:w-32"
+                  />
+                </a>
+              </div>
+            </div>
+          ) : (
+            <Button size="lg" asChild className="w-full sm:w-auto">
+              <Link
+                href={
+                  signedIn ? `/sdgs/${action.sdg.slug}/actions/${action.slug}/submit` : "/signin"
+                }
+              >
+                {signedIn ? t("action.submitThisAction") : t("action.signInToSubmit")}
+              </Link>
+            </Button>
+          )}
         </div>
       </section>
     </div>

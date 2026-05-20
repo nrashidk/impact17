@@ -58,7 +58,15 @@
     "submitThisAction": "قدّم هذا الإجراء",
     "backToSdg": "العودة إلى {name}",
     "verificationPhysical": "التحقق بالصورة: نشاط واقعي",
-    "verificationArtefact": "التحقق بالصورة: عمل منجز"
+    "verificationArtefact": "التحقق بالصورة: عمل منجز",
+    "completed": {
+      "badge": "مكتمل",
+      "heading": "لقد أكملت هذا الإجراء",
+      "pointsLabel": "النقاط المكتسبة:",
+      "dateLabel": "تاريخ الإكمال:",
+      "photoAlt": "صورتك المُرسلة",
+      "viewPhoto": "اعرض صورتك المُرسلة"
+    }
   },
   "effort": {
     "easy": "سهل",
