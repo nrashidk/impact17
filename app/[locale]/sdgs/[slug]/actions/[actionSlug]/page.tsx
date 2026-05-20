@@ -145,33 +145,33 @@ export default async function ActionDetailPage({
         <div className="mx-auto max-w-3xl">
           {approvedSubmission ? (
             <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-5 dark:border-emerald-900/60 dark:bg-emerald-950/40">
-              <div className="flex items-start gap-3">
-                <CheckCircle2
-                  className="mt-0.5 h-6 w-6 shrink-0 text-emerald-600 dark:text-emerald-400"
-                  aria-hidden
-                />
-                <div className="flex-1">
-                  <h2 className="text-xl font-bold tracking-tight text-emerald-900 dark:text-emerald-100">
-                    {t("action.completed.heading")}
-                  </h2>
-                  <dl className="mt-3 space-y-1 text-sm text-emerald-900/90 dark:text-emerald-100/90">
-                    <div className="flex flex-wrap gap-x-2">
-                      <dt className="font-medium">{t("action.completed.pointsLabel")}</dt>
-                      <dd>{t("common.points", { count: action.points })}</dd>
-                    </div>
-                    <div className="flex flex-wrap gap-x-2">
-                      <dt className="font-medium">{t("action.completed.dateLabel")}</dt>
-                      <dd>{completedDate}</dd>
-                    </div>
-                  </dl>
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6 sm:rtl:flex-row-reverse">
+                <div className="flex flex-1 items-start gap-3">
+                  <CheckCircle2
+                    className="mt-0.5 h-6 w-6 shrink-0 text-emerald-600 dark:text-emerald-400"
+                    aria-hidden
+                  />
+                  <div className="flex-1">
+                    <h2 className="text-xl font-bold tracking-tight text-emerald-900 dark:text-emerald-100">
+                      {t("action.completed.heading")}
+                    </h2>
+                    <dl className="mt-3 space-y-1 text-sm text-emerald-900/90 dark:text-emerald-100/90">
+                      <div className="flex flex-wrap gap-x-2">
+                        <dt className="font-medium">{t("action.completed.pointsLabel")}</dt>
+                        <dd>{t("common.points", { count: action.points })}</dd>
+                      </div>
+                      <div className="flex flex-wrap gap-x-2">
+                        <dt className="font-medium">{t("action.completed.dateLabel")}</dt>
+                        <dd>{completedDate}</dd>
+                      </div>
+                    </dl>
+                  </div>
                 </div>
-              </div>
-              <div className="mt-4">
                 <a
                   href={approvedSubmission.photoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block overflow-hidden rounded-md border border-emerald-200 bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:border-emerald-900/60 dark:bg-zinc-900"
+                  className="inline-block shrink-0 overflow-hidden rounded-md border border-emerald-200 bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:border-emerald-900/60 dark:bg-zinc-900"
                   aria-label={t("action.completed.viewPhoto")}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
