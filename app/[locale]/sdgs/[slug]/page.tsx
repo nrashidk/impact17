@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { prisma } from "@/lib/db";
+import { auth } from "@/lib/auth";
 import { localeText } from "@/lib/i18n-fields";
 import { ActionCard } from "@/components/features/action-card";
 
@@ -47,6 +48,21 @@ export default async function SdgDetailPage({
   const name = localeText(sdg.nameEn, sdg.nameAr, locale);
   const description = localeText(sdg.descriptionEn, sdg.descriptionAr, locale);
 
+  const session = await auth();
+  const userId = session?.user?.id;
+  let completedActionIds: Set<string> = new Set();
+  if (userId && sdg.actions.length > 0) {
+    const approved = await prisma.submission.findMany({
+      where: {
+        userId,
+        status: "APPROVED",
+        actionId: { in: sdg.actions.map((a) => a.id) },
+      },
+      select: { actionId: true },
+    });
+    completedActionIds = new Set(approved.map((s) => s.actionId));
+  }
+
   return (
     <div className="flex flex-col">
       <header className="px-6 py-12 sm:py-16 text-white" style={{ backgroundColor: sdg.color }}>
@@ -83,6 +99,7 @@ export default async function SdgDetailPage({
                   effort={action.effortTier}
                   points={action.points}
                   verificationType={action.verificationType}
+                  completed={completedActionIds.has(action.id)}
                 />
               </li>
             ))}
