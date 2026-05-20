@@ -10,11 +10,14 @@ export async function Header({ locale }: { locale: string }) {
 
   return (
     <header className="border-b border-zinc-200 dark:border-zinc-800">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
-        <Link href="/" className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-4 flex flex-nowrap items-center justify-between gap-2 sm:gap-4">
+        <Link
+          href="/"
+          className="shrink-0 text-lg sm:text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50"
+        >
           Impact17
         </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           {session?.user ? (
             <>
               <Link
@@ -32,13 +35,13 @@ export async function Header({ locale }: { locale: string }) {
             <>
               <Link
                 href="/signin"
-                className="inline-flex items-center justify-center rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                className="inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-md border border-input bg-background px-2.5 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
               >
                 {t("signIn")}
               </Link>
               <Link
                 href="/signup"
-                className="hidden sm:inline-flex items-center justify-center rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                className="inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-md bg-primary px-2.5 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
               >
                 {t("signUp")}
               </Link>
