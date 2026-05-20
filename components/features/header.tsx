@@ -22,14 +22,17 @@ export async function Header({ locale }: { locale: string }) {
             <>
               <Link
                 href="/points"
-                className="text-sm font-medium text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-50"
+                className="inline-flex items-center justify-center rounded-md border border-input bg-background px-2.5 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
               >
                 {t("points")}
               </Link>
-              <span className="text-sm text-zinc-700 dark:text-zinc-300">
+              <span className="whitespace-nowrap text-xs sm:text-sm text-zinc-700 dark:text-zinc-300">
                 {session.user.name ?? session.user.username ?? session.user.email}
               </span>
-              <SignOutButton label={t("signOut")} />
+              <SignOutButton
+                label={t("signOut")}
+                className="inline-flex items-center justify-center rounded-md border border-input bg-background px-2.5 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              />
             </>
           ) : (
             <>
