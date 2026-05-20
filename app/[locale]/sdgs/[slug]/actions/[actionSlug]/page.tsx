@@ -178,7 +178,7 @@ export default async function ActionDetailPage({
                   <img
                     src={approvedSubmission.photoUrl}
                     alt={t("action.completed.photoAlt")}
-                    className="h-24 w-24 object-cover sm:h-32 sm:w-32"
+                    className="h-48 w-48 object-cover sm:h-64 sm:w-64"
                   />
                 </a>
               </div>
