@@ -161,6 +161,14 @@ Do not skip phases or jump ahead. The next buildable work is private-only (badge
 
 ---
 
+## Known small issues — deferred
+
+Cosmetic / non-blocking issues that are intentionally NOT being fixed as standalone patches. Each will be picked up as part of the larger redesign or workstream it naturally belongs to.
+
+- **iOS Safari, all pages:** the language switcher's right edge is slightly clipped on the mobile viewport, requiring a small horizontal swipe to see the full control. Likely cause: missing `overflow-x: hidden` on `html`/`body`, or a header element extending a few pixels past the viewport. Cosmetic, not blocking. Defer until the main-page header redesign and fix as part of that work rather than as a standalone patch.
+
+---
+
 ## Reference documents
 
 The catalogue source files (in `/content`) and the product spec (in `/docs/spec.md`) are authoritative. If anything in this CLAUDE.md contradicts the spec, the spec wins — and you should flag the contradiction so this file can be corrected.
