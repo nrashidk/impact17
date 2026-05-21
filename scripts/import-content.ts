@@ -229,6 +229,71 @@ export async function parseAllActions(): Promise<ParsedAction[]> {
   return all;
 }
 
+// Arabic sibling catalogue (sdg-NN-ar.md). Same block structure as the English
+// files, with Arabic field labels: **كيفية التنفيذ:** (how-to) and
+// **أسئلة التأمل:** (reflection prompts). Effort/points/verification are owned
+// by the English source of truth and are not re-read here.
+type ArabicAction = {
+  titleAr: string;
+  descriptionAr: string;
+  howToStepsAr: string[];
+  reflectionPromptsAr: string;
+};
+
+function parseArabicBody(body: string): { howToSteps: string[]; reflectionPrompts: string } {
+  const howToMatch = body.match(/-\s+\*\*كيفية التنفيذ:\*\*\s*\n((?:\s{2,}-\s+[^\n]+\n?)+)/);
+  if (!howToMatch) {
+    throw new Error("Could not parse Arabic how-to block");
+  }
+  const howToSteps = howToMatch[1]
+    .split("\n")
+    .map((line) => line.replace(/^\s+-\s+/, "").trim())
+    .filter((line) => line.length > 0);
+
+  const reflMatch = body.match(/-\s+\*\*أسئلة التأمل:\*\*\s*([^\n]+)/);
+  if (!reflMatch) {
+    throw new Error("Could not parse Arabic reflection prompts");
+  }
+  const reflectionPrompts = reflMatch[1].trim();
+
+  return { howToSteps, reflectionPrompts };
+}
+
+// Keyed by "<sdgId>.<actionIndex>" so each Arabic action lines up with its
+// English counterpart.
+export async function parseArabicActions(): Promise<Map<string, ArabicAction>> {
+  const files = (await readdir(CONTENT_DIR)).filter((f) => /^sdg-\d{2}-ar\.md$/.test(f)).sort();
+  if (files.length !== 17) {
+    throw new Error(`Expected 17 Arabic catalogue files, found ${files.length}`);
+  }
+  const map = new Map<string, ArabicAction>();
+  for (const filename of files) {
+    const sdgId = Number(filename.match(/^sdg-(\d{2})-ar\.md$/)![1]);
+    const text = await readFile(path.join(CONTENT_DIR, filename), "utf-8");
+    const blocks = splitActions(sdgId, text);
+    if (blocks.length !== 10) {
+      throw new Error(`${filename}: expected 10 actions, got ${blocks.length}`);
+    }
+    for (const block of blocks) {
+      try {
+        const { howToSteps, reflectionPrompts } = parseArabicBody(block.body);
+        map.set(`${sdgId}.${block.actionIndex}`, {
+          titleAr: block.title,
+          descriptionAr: block.title,
+          howToStepsAr: howToSteps,
+          reflectionPromptsAr: reflectionPrompts,
+        });
+      } catch (err) {
+        const reason = err instanceof Error ? err.message : String(err);
+        throw new Error(
+          `${filename} action ${sdgId}.${block.actionIndex} ("${block.title}"): ${reason}`,
+        );
+      }
+    }
+  }
+  return map;
+}
+
 export type ImportSummary = {
   totalActions: number;
   byEffort: Record<EffortTier, number>;
@@ -238,6 +303,16 @@ export type ImportSummary = {
 
 export async function importContent(prisma: PrismaClient): Promise<ImportSummary> {
   const actions = await parseAllActions();
+  const arabic = await parseArabicActions();
+
+  // Structural lockstep: the Arabic catalogue must mirror the English one
+  // exactly. Mismatched counts mean a translation drifted from the source, so
+  // fail the seed loudly rather than silently importing partial Arabic content.
+  if (arabic.size !== actions.length) {
+    throw new Error(
+      `Arabic/English action count mismatch: ${actions.length} English actions vs ${arabic.size} Arabic actions`,
+    );
+  }
 
   // Slug uniqueness check (the @unique constraint would error, but a pre-check
   // gives a clearer message).
@@ -262,19 +337,30 @@ export async function importContent(prisma: PrismaClient): Promise<ImportSummary
 
   for (const a of actions) {
     const slug = slugify(a.title);
+    const key = `${a.sdgId}.${a.actionIndex}`;
+    const ar = arabic.get(key);
+    if (!ar) {
+      throw new Error(`Missing Arabic translation for action ${key} ("${a.title}")`);
+    }
+    if (ar.howToStepsAr.length !== a.howToSteps.length) {
+      throw new Error(
+        `How-to step count mismatch for action ${key} ("${a.title}"): ` +
+          `${a.howToSteps.length} English bullets vs ${ar.howToStepsAr.length} Arabic bullets`,
+      );
+    }
     await prisma.action.upsert({
       where: { slug },
       create: {
         sdgId: a.sdgId,
         slug,
         titleEn: a.title,
-        titleAr: "",
+        titleAr: ar.titleAr,
         descriptionEn: a.title,
-        descriptionAr: "",
+        descriptionAr: ar.descriptionAr,
         howToStepsEn: a.howToSteps,
-        howToStepsAr: [],
+        howToStepsAr: ar.howToStepsAr,
         reflectionPromptsEn: [a.reflectionPrompts],
-        reflectionPromptsAr: [],
+        reflectionPromptsAr: [ar.reflectionPromptsAr],
         effortTier: a.effort,
         points: a.points,
         verificationType: a.verificationType,
@@ -283,9 +369,13 @@ export async function importContent(prisma: PrismaClient): Promise<ImportSummary
       update: {
         sdgId: a.sdgId,
         titleEn: a.title,
+        titleAr: ar.titleAr,
         descriptionEn: a.title,
+        descriptionAr: ar.descriptionAr,
         howToStepsEn: a.howToSteps,
+        howToStepsAr: ar.howToStepsAr,
         reflectionPromptsEn: [a.reflectionPrompts],
+        reflectionPromptsAr: [ar.reflectionPromptsAr],
         effortTier: a.effort,
         points: a.points,
         verificationType: a.verificationType,
