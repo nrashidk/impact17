@@ -84,6 +84,7 @@ These are decisions already locked. Do not relitigate or "improve" them without 
 5. **One action = one SDG.** Each action has exactly one primary SDG. Do not multi-credit.
 6. **Hybrid moderation:** EVERY photo and EVERY reflection runs through the Claude API for content moderation at submission time (combined with verification), before it could ever become public. Note: nothing user-generated is public yet — public profiles, public reflections, and any peer-visible surface are gated behind the human-review system (see "Scoring & leaderboard (locked)" and Phase plan below; that gate is authoritative). User reports and the manual review queue in `/admin` are Phase 5 — NOT built yet.
 7. **Bilingual at launch.** English and Arabic. Every UI string lives in `/messages`. Arabic RTL must work everywhere. Test layouts in both.
+   - *Action catalogue:* Arabic content lives in `/content/sdg-NN-ar.md` siblings and is wired into the seed importer (`scripts/import-content.ts`), which populates `Action.titleAr/descriptionAr/howToStepsAr/reflectionPromptsAr` with structural-lockstep asserts against the English files.
 8. **Public profiles, public reflections, full social** (comments, follows, likes) — but with full safety tooling in v1: block, mute, report, abuse policy page.
 9. **Perceptual hashing** on every uploaded photo to block reuse. Use `imghash` or equivalent.
 10. **UAE-localised content** in the catalogue. The how-to steps name real UAE species, places, partners, programmes. Do not generalise them.
