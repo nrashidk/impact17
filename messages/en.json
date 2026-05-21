@@ -2,7 +2,9 @@
   "home": {
     "title": "Impact17",
     "subtitle": "Take real action on all 17 UN Sustainable Development Goals.",
-    "cta": "Browse the 17 SDGs"
+    "cta": "Browse the 17 SDGs",
+    "wheelAlt": "The 17 UN Sustainable Development Goals wheel",
+    "chooseGoal": "Choose a goal to take action"
   },
   "nav": {
     "home": "Home",
@@ -20,7 +22,9 @@
     "arabic": "العربية"
   },
   "footer": {
-    "tagline": "Verified action on the UN Sustainable Development Goals — UAE-localised."
+    "tagline": "Verified action on the UN Sustainable Development Goals — UAE-localised.",
+    "unAttribution": "The content of this publication has not been approved by the United Nations and does not reflect the views of the United Nations or its officials or Member States.",
+    "unLinkLabel": "un.org/sustainabledevelopment"
   },
   "points": {
     "title": "Your points",

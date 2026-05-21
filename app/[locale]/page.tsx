@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import Image from "next/image";
 import type { Locale } from "@/i18n/routing";
 import { prisma } from "@/lib/db";
 import { localeText } from "@/lib/i18n-fields";
@@ -46,17 +47,25 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
 
   return (
     <div className="flex flex-col">
-      <section className="px-6 py-16 sm:py-24 text-center">
-        <h1 className="text-4xl sm:text-6xl font-bold tracking-tight">{t("title")}</h1>
-        <p className="mt-4 mx-auto max-w-xl text-lg text-zinc-600 dark:text-zinc-400">
-          {t("subtitle")}
-        </p>
+      <section className="px-6 pt-12 sm:pt-16 pb-8 flex flex-col items-center text-center">
+        <Image
+          src="/sdg-wheel.png"
+          alt={t("wheelAlt")}
+          width={448}
+          height={448}
+          priority
+          className="w-full max-w-xs sm:max-w-md h-auto"
+        />
+        <h1 className="mt-6 text-3xl sm:text-4xl font-bold tracking-tight">{t("title")}</h1>
       </section>
 
       <section className="px-6 pb-24" aria-labelledby="sdg-grid-heading">
         <div className="mx-auto max-w-6xl">
-          <h2 id="sdg-grid-heading" className="sr-only">
-            {t("cta")}
+          <h2
+            id="sdg-grid-heading"
+            className="mb-6 text-center text-xl sm:text-2xl font-semibold tracking-tight"
+          >
+            {t("chooseGoal")}
           </h2>
           {sdgs.length === 0 ? (
             <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
