@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { localeText } from "@/lib/i18n-fields";
 import { SdgCard, SdgCardSkeleton } from "@/components/features/sdg-card";
 import { SdgContextCard } from "@/components/features/sdg-context-card";
+import { UaeRibbon } from "@/components/features/uae-ribbon";
 
 // Fallback palette in official UN SDG order, used only when the database has
 // no rows yet (e.g., immediately after deploy, before the admin seed has run).
@@ -59,6 +60,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
           >
             {t("cards.heading")}
           </h2>
+          <UaeRibbon className="hidden md:block w-full mb-6" />
           <ul className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <li>
               <SdgContextCard
