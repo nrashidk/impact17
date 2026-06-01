@@ -1,9 +1,9 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import Image from "next/image";
 import type { Locale } from "@/i18n/routing";
 import { prisma } from "@/lib/db";
 import { localeText } from "@/lib/i18n-fields";
 import { SdgCard, SdgCardSkeleton } from "@/components/features/sdg-card";
+import { SdgContextCard } from "@/components/features/sdg-context-card";
 
 // Fallback palette in official UN SDG order, used only when the database has
 // no rows yet (e.g., immediately after deploy, before the admin seed has run).
@@ -47,16 +47,39 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
 
   return (
     <div className="flex flex-col">
-      <section className="px-6 pt-12 sm:pt-16 pb-8 flex flex-col items-center text-center">
-        <Image
-          src="/sdg-wheel.png"
-          alt={t("wheelAlt")}
-          width={448}
-          height={448}
-          priority
-          className="w-full max-w-xs sm:max-w-md h-auto"
-        />
-        <h1 className="mt-6 text-3xl sm:text-4xl font-bold tracking-tight">{t("title")}</h1>
+      <section className="px-6 pt-12 sm:pt-16 pb-4 text-center">
+        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">{t("title")}</h1>
+      </section>
+
+      <section className="px-6 py-8 sm:py-12" aria-labelledby="cards-heading">
+        <div className="mx-auto max-w-6xl">
+          <h2
+            id="cards-heading"
+            className="mb-6 text-center text-xl sm:text-2xl font-semibold tracking-tight"
+          >
+            {t("cards.heading")}
+          </h2>
+          <ul className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <li>
+              <SdgContextCard
+                question={t("cards.sdg.question")}
+                answer={t("cards.sdg.answer")}
+              />
+            </li>
+            <li>
+              <SdgContextCard
+                question={t("cards.action.question")}
+                answer={t("cards.action.answer")}
+              />
+            </li>
+            <li>
+              <SdgContextCard
+                question={t("cards.future.question")}
+                answer={t("cards.future.answer")}
+              />
+            </li>
+          </ul>
+        </div>
       </section>
 
       <section className="px-6 pb-24" aria-labelledby="sdg-grid-heading">
