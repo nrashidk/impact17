@@ -28,7 +28,7 @@ export function UaeRibbon({ className = "" }: { className?: string }) {
       />
       <path
         d="M 0 60 C 200 50, 400 70, 600 60 S 1000 50, 1200 60"
-        stroke="#f4f4f5"
+        stroke="#FFFFFF"
         strokeWidth="6"
         strokeLinecap="round"
         fill="none"
