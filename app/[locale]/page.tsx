@@ -60,8 +60,8 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
           >
             {t("cards.heading")}
           </h2>
-          <UaeRibbon className="hidden md:block w-full mb-6" />
-          <ul className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="relative">
+            <ul className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <li>
               <SdgContextCard
                 question={t("cards.sdg.question")}
@@ -81,6 +81,8 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
               />
             </li>
           </ul>
+            <UaeRibbon className="hidden md:block pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 w-full" />
+          </div>
         </div>
       </section>
 
