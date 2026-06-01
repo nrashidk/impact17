@@ -10,8 +10,6 @@ Impact17 is a bilingual (Arabic/English) public consumer web platform where user
 
 **Core user loop:** Land on the site → see all 17 SDGs → pick an SDG → pick one of 10 actions → read "how to" steps → do it in real life → submit photo + summary + reflection + enjoyment + 1-5 star rating → AI verifies photo → earn action badge → complete all 10 actions in an SDG → earn SDG badge + 200-point bonus → complete all 17 SDGs → headline achievement.
 
-**Homepage hero:** the landing page uses the official UN SDG wheel as a static, decorative image (`/public/sdg-wheel.png`), with the required UN attribution shown site-wide in the footer per UN guidelines.
-
 ---
 
 ## Tech stack — non-negotiable

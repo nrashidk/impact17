@@ -3,8 +3,22 @@
     "title": "Impact17",
     "subtitle": "Take real action on all 17 UN Sustainable Development Goals.",
     "cta": "Browse the 17 SDGs",
-    "wheelAlt": "The 17 UN Sustainable Development Goals wheel",
-    "chooseGoal": "Choose a goal to take action"
+    "chooseGoal": "Choose a goal to take action",
+    "cards": {
+      "heading": "Why Impact17?",
+      "sdg": {
+        "question": "What are the SDGs?",
+        "answer": "The Sustainable Development Goals (SDGs) are 17 global goals created by the United Nations to make the world better, safer, and more sustainable by 2030. They cover everything from ending poverty to protecting the planet — and the UAE has aligned its national vision with these goals."
+      },
+      "action": {
+        "question": "Why Do We Need to Take Action?",
+        "answer": "The UAE faces real challenges — water scarcity, fragile desert ecosystems, dependence on imports, and the impacts of a changing climate. Taking action today protects what makes life here possible: clean water, food security, healthy communities, and the natural heritage of our land and sea."
+      },
+      "future": {
+        "question": "What Could the Future Look Like?",
+        "answer": "Imagine an Emirates that leads the region in clean energy, restores its mangroves and coral reefs, grows its own food sustainably, and reaches net-zero by 2050 — the future the UAE has committed to. Every action you take through Impact17 contributes to that future."
+      }
+    }
   },
   "nav": {
     "home": "Home",
@@ -22,9 +36,7 @@
     "arabic": "العربية"
   },
   "footer": {
-    "tagline": "Verified action on the UN Sustainable Development Goals — UAE-localised.",
-    "unAttribution": "The content of this publication has not been approved by the United Nations and does not reflect the views of the United Nations or its officials or Member States.",
-    "unLinkLabel": "un.org/sustainabledevelopment"
+    "tagline": "Verified action on the UN Sustainable Development Goals — UAE-localised."
   },
   "points": {
     "title": "Your points",
