@@ -43,9 +43,7 @@
     "title": "ملفي الشخصي",
     "name": "الاسم",
     "email": "البريد الإلكتروني",
-    "totalPoints": "إجمالي النقاط",
-    "completedSdgs": "الأهداف المكتملة",
-    "verifiedActions": "الإجراءات الموثقة"
+    "myPointsSection": "نقاطي"
   },
   "leaderboard": {
     "title": "لوحة الصدارة",

@@ -10,6 +10,17 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/api/admin/seed": ["./content/**/*.md"],
   },
+  // /[locale]/points was consolidated into /[locale]/profile. Redirect any
+  // remaining bookmarks/links permanently.
+  async redirects() {
+    return [
+      {
+        source: "/:locale/points",
+        destination: "/:locale/profile",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);
