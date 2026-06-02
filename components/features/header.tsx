@@ -26,7 +26,7 @@ export async function Header({ locale }: { locale: string }) {
               >
                 {t("points")}
               </Link>
-              <span className="whitespace-nowrap text-xs sm:text-sm text-zinc-700 dark:text-zinc-300">
+              <span className="hidden sm:inline whitespace-nowrap text-xs sm:text-sm text-zinc-700 dark:text-zinc-300">
                 {session.user.name ?? session.user.username ?? session.user.email}
               </span>
               <SignOutButton
