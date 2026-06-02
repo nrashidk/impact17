@@ -48,7 +48,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
   return (
     <div className="flex flex-col">
       <section className="px-6 pt-12 sm:pt-16 pb-4 text-center">
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">{t("title")}</h1>
+        <h1 className="text-6xl sm:text-7xl md:text-8xl font-bold tracking-tight">{t("title")}</h1>
       </section>
 
       <section className="px-6 py-8 sm:py-12" aria-labelledby="cards-heading">
