@@ -25,6 +25,7 @@
     "sdgs": "SDGs",
     "leaderboard": "Leaderboard",
     "profile": "Profile",
+    "myProfile": "My Profile",
     "points": "My points",
     "signIn": "Log in",
     "signUp": "Sign up",
@@ -37,6 +38,23 @@
   },
   "footer": {
     "tagline": "Verified action on the UN Sustainable Development Goals — UAE-localised."
+  },
+  "profile": {
+    "title": "My Profile",
+    "name": "Name",
+    "email": "Email",
+    "totalPoints": "Total points",
+    "completedSdgs": "SDGs completed",
+    "verifiedActions": "Verified actions"
+  },
+  "leaderboard": {
+    "title": "Leaderboard",
+    "demoBanner": "Demo mode — leaderboard reflects all submissions including pending review. Full visibility will activate after the human review system is fully operational.",
+    "rank": "Rank",
+    "name": "Name",
+    "points": "Points",
+    "empty": "No users yet.",
+    "anonymous": "Anonymous user"
   },
   "points": {
     "title": "Your points",

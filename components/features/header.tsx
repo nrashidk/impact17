@@ -4,6 +4,9 @@ import { auth } from "@/lib/auth";
 import { LocaleSwitcher } from "./locale-switcher";
 import { SignOutButton } from "./sign-out-button";
 
+const outlineButton =
+  "items-center justify-center rounded-md border border-input bg-background px-2.5 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring whitespace-nowrap shrink-0";
+
 export async function Header({ locale }: { locale: string }) {
   const t = await getTranslations("nav");
   const session = await auth();
@@ -18,33 +21,30 @@ export async function Header({ locale }: { locale: string }) {
           Impact17
         </Link>
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <Link href="/leaderboard" className={`hidden sm:inline-flex ${outlineButton}`}>
+            {t("leaderboard")}
+          </Link>
           {session?.user ? (
             <>
-              <Link
-                href="/points"
-                className="inline-flex items-center justify-center rounded-md border border-input bg-background px-2.5 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-              >
+              <Link href="/points" className={`hidden sm:inline-flex ${outlineButton}`}>
                 {t("points")}
               </Link>
-              <span className="hidden sm:inline whitespace-nowrap text-xs sm:text-sm text-zinc-700 dark:text-zinc-300">
-                {session.user.name ?? session.user.username ?? session.user.email}
-              </span>
+              <Link href="/profile" className={`inline-flex ${outlineButton}`}>
+                {t("myProfile")}
+              </Link>
               <SignOutButton
                 label={t("signOut")}
-                className="inline-flex items-center justify-center rounded-md border border-input bg-background px-2.5 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                className={`inline-flex ${outlineButton}`}
               />
             </>
           ) : (
             <>
-              <Link
-                href="/signin"
-                className="inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-md border border-input bg-background px-2.5 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-              >
+              <Link href="/signin" className={`inline-flex ${outlineButton}`}>
                 {t("signIn")}
               </Link>
               <Link
                 href="/signup"
-                className="inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-md bg-primary px-2.5 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                className="hidden sm:inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-md bg-primary px-2.5 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
               >
                 {t("signUp")}
               </Link>
