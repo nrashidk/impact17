@@ -97,7 +97,7 @@ These are decisions already locked. Do not relitigate or "improve" them without 
 - **A public or peer-visible leaderboard is gated behind the human-review system and must NOT ship before that system exists.** No public leaderboard, peer ranking, top-user highlights, rank-implying badges, points in public profiles, or notifications referencing standing. (This intentionally defers the "leaderboard" part of the original Phase 3 plan — recorded as an accepted deviation.)
 - **The admin score view is internal-only** (secret-gated tooling) and must not feed, surface, or leak into any user-visible element.
 - **Score must be recomputable from APPROVED submissions**, so a fraudulent submission's points are revoked automatically when its status changes. Never a one-way / incrementing counter.
-- **UNVERIFIED: the SDG completion bonus (+200) revoke path is untested.** Test A (single-action points revoke) is confirmed passing. Test B — that the +200 bonus is removed when an in-SDG submission flips APPROVED→REJECTED and the SDG is no longer complete — has NOT been run and MUST pass before any leaderboard or status-bearing feature ships.
+- **Test B verified 2026-06-02:** SDG completion bonus +200 applies on full SDG completion and revokes correctly when any action falls back below APPROVED. Verified via one-shot admin endpoint (now removed). PR #38.
 
 ---
 
