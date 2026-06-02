@@ -43,9 +43,7 @@
     "title": "My Profile",
     "name": "Name",
     "email": "Email",
-    "totalPoints": "Total points",
-    "completedSdgs": "SDGs completed",
-    "verifiedActions": "Verified actions"
+    "myPointsSection": "My Points"
   },
   "leaderboard": {
     "title": "Leaderboard",

@@ -6,7 +6,7 @@ This file is read by Claude Code at the start of every session. It defines what 
 
 ## What this project is
 
-Impact17 is a bilingual (Arabic/English) public consumer web platform where users complete real-world UN Sustainable Development Goal (SDG) actions, submit photo proof, earn badges, track their own progress, and (longer-term) engage socially. The platform serves UAE users primarily; content is UAE-localised throughout. (Leaderboards and any peer-visible standing are an eventual goal but are gated behind the human-review system — see "Scoring & leaderboard (locked)"; that gate is authoritative over this intro.)
+Impact17 is a bilingual (Arabic/English) public consumer web platform where users complete real-world UN Sustainable Development Goal (SDG) actions, submit photo proof, earn badges, track their own progress, and (longer-term) engage socially. The platform serves UAE users primarily; content is UAE-localised throughout. (The leaderboard ships pre-launch in demo mode with a banner; the full peer-visible standing — strict APPROVED-only gating and public profile pages — unlocks after the human-review system has been validated under real-user load. See "Scoring & leaderboard (locked)"; that section is authoritative over this intro.)
 
 **Core user loop:** Land on the site → see all 17 SDGs → pick an SDG → pick one of 10 actions → read "how to" steps → do it in real life → submit photo + summary + reflection + enjoyment + 1-5 star rating → AI verifies photo → earn action badge → complete all 10 actions in an SDG → earn SDG badge + 200-point bonus → complete all 17 SDGs → headline achievement.
 
@@ -40,8 +40,9 @@ Single Next.js repo. Standard App Router layout:
     /sdgs/[id]        — SDG detail
     /actions/[id]     — action detail + submission
     /dashboard        — user dashboard
-    /leaderboard      — leaderboard
-    /profile/[username] — public profile
+    /leaderboard      — leaderboard (demo mode pre-launch)
+    /profile          — self-view profile (consolidated with points)
+    /profile/[username] — public profile (Phase 5)
     /admin            — moderation queue (admin-only)
   /api                — API routes
     /actions          — action CRUD
@@ -82,7 +83,7 @@ These are decisions already locked. Do not relitigate or "improve" them without 
 3. **Adults-only at launch.** Age gate at sign-up: date of birth required, under-18 cannot register. Parental consent flow comes in v1.5 — DO NOT build it now.
 4. **Effort-weighted points:** Easy = 5, Medium = 10, Hard = 20. SDG completion bonus = 200.
 5. **One action = one SDG.** Each action has exactly one primary SDG. Do not multi-credit.
-6. **Hybrid moderation:** EVERY photo and EVERY reflection runs through the Claude API for content moderation at submission time (combined with verification), before it could ever become public. Note: nothing user-generated is public yet — public profiles, public reflections, and any peer-visible surface are gated behind the human-review system (see "Scoring & leaderboard (locked)" and Phase plan below; that gate is authoritative). User reports and the manual review queue in `/admin` are Phase 5 — NOT built yet.
+6. **Hybrid moderation:** EVERY photo and EVERY reflection runs through the Claude API for content moderation at submission time (combined with verification), before it could ever become public. Note: public profiles and public reflections remain gated behind the human-review system; the leaderboard ships pre-launch in demo mode with a banner indicating `PENDING`/`IN_REVIEW` submissions are reflected (see "Scoring & leaderboard (locked)" and Phase plan below; that section is authoritative). User reports and the manual review queue in `/admin` are still NOT built.
 7. **Bilingual at launch.** English and Arabic. Every UI string lives in `/messages`. Arabic RTL must work everywhere. Test layouts in both.
    - *Action catalogue:* Arabic content lives in `/content/sdg-NN-ar.md` siblings and is wired into the seed importer (`scripts/import-content.ts`), which populates `Action.titleAr/descriptionAr/howToStepsAr/reflectionPromptsAr` with structural-lockstep asserts against the English files.
 8. **Public profiles, public reflections, full social** (comments, follows, likes) — but with full safety tooling in v1: block, mute, report, abuse policy page.
@@ -93,8 +94,8 @@ These are decisions already locked. Do not relitigate or "improve" them without 
 
 ## Scoring & leaderboard (locked)
 
-- **Points engine and private/own-score display are in scope.** A signed-in user may see ONLY their own total — no rank, no comparison, no peer data.
-- **A public or peer-visible leaderboard is gated behind the human-review system and must NOT ship before that system exists.** No public leaderboard, peer ranking, top-user highlights, rank-implying badges, points in public profiles, or notifications referencing standing. (This intentionally defers the "leaderboard" part of the original Phase 3 plan — recorded as an accepted deviation.)
+- **Points engine and self-view.** The scoring engine is authoritative for every score figure surfaced anywhere — own-score display at `/profile` (private self-view consolidated with name + email) and the demo-mode `/leaderboard`. Never a stored running total.
+- **Public leaderboard ships with a demo-mode banner during pre-launch**, indicating that submissions including `PENDING`/`IN_REVIEW` are reflected in scores. The full peer-visible status with strict APPROVED-only gating activates after the human-review system has been validated under real-user submission load. **Profile pages remain self-view only; no public profile pages until that gate clears.**
 - **The admin score view is internal-only** (secret-gated tooling) and must not feed, surface, or leak into any user-visible element.
 - **Score must be recomputable from APPROVED submissions**, so a fraudulent submission's points are revoked automatically when its status changes. Never a one-way / incrementing counter.
 - **Test B verified 2026-06-02:** SDG completion bonus +200 applies on full SDG completion and revokes correctly when any action falls back below APPROVED. Verified via one-shot admin endpoint (now removed). PR #38.
@@ -148,17 +149,17 @@ These are decisions already locked. Do not relitigate or "improve" them without 
 
 **Phase 2 — Auth + Submissions.** ✅ Done. Sign-up with age gate, credentials + Google auth, action submission form, photo upload (Vercel Blob), Claude vision verification + moderation. Badge issuance is the remaining Phase 3 sub-step.
 
-**Phase 3 — Private progress (current).** Points engine (done), private own-score view (done, `/points`), badge issuance, and a private user dashboard/badge wall. NO public leaderboard, NO peer-visible ranking, NO public profiles in this phase — all of that is gated and comes only after Phase 5. Remaining buildable Phase 3 work: badge issuance + private dashboard. The +200 SDG-bonus revoke path (Test B) must be verified before any status-bearing feature.
+**Phase 3 — Private progress (current).** Points engine (done), self-view profile + points consolidated at `/profile` (done; the old `/points` redirects there), demo-mode public leaderboard (done at `/leaderboard` with the pre-launch banner per the section above), badge issuance, and a private user dashboard/badge wall. Public profile pages and the leaderboard's full APPROVED-only activation remain gated on Phase 4. Remaining buildable Phase 3 work: badge issuance + private dashboard.
 
-**Phase 4 — Human review + moderation tooling (the gate).** Admin review/moderation queue UI so `IN_REVIEW` submissions and reported content are actually actionable; content-report flow; perceptual hashing for reused photos. **This is the gate: nothing public/peer-visible and no leaderboard may ship until this exists and is tested.**
+**Phase 4 — Human review + moderation tooling (the gate).** Admin review/moderation queue UI so `IN_REVIEW` submissions and reported content are actually actionable; content-report flow; perceptual hashing for reused photos. **This is the gate that flips the leaderboard out of demo mode (strict APPROVED-only gating) and unlocks public profile pages once it has been validated under real-user submission load.**
 
-**Phase 5 — Public leaderboard + public profiles.** Only after the Phase 4 human-review system exists and is verified: weekly + all-time leaderboards, public profile pages, public badge walls, peer-visible standing.
+**Phase 5 — Full public surface.** Only after the Phase 4 human-review system has been validated under real-user load: leaderboard graduates from demo to strict APPROVED-only gating, public profile pages with badge walls activate, peer-visible standing surfaces (weekly + all-time).
 
 **Phase 6 — Social.** Comments, follows, likes, block, mute, abuse policy — built on top of the review system.
 
 **Phase 7 — Polish + soft launch.** Arabic translation pass, accessibility audit, performance pass, soft launch.
 
-Do not skip phases or jump ahead. The next buildable work is private-only (badges + private dashboard) — NOT the leaderboard. Public leaderboard and any peer-visible standing come strictly AFTER the human-review system (Phase 4) is built and tested. Each phase ships, gets tested, then the next phase starts.
+Do not skip phases or jump ahead. The next buildable Phase 3 work is private-only (badges + private dashboard). Public profile pages and the leaderboard's full peer-visible activation come strictly AFTER the human-review system (Phase 4) is built and validated under real-user load — the pre-launch leaderboard exists in demo mode only until then. Each phase ships, gets tested, then the next phase starts.
 
 ---
 

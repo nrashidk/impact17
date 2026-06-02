@@ -26,9 +26,6 @@ export async function Header({ locale }: { locale: string }) {
           </Link>
           {session?.user ? (
             <>
-              <Link href="/points" className={`hidden sm:inline-flex ${outlineButton}`}>
-                {t("points")}
-              </Link>
               <Link href="/profile" className={`inline-flex ${outlineButton}`}>
                 {t("myProfile")}
               </Link>
