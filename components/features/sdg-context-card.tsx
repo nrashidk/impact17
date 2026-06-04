@@ -47,7 +47,7 @@ export function SdgContextCard({ question, answer }: { question: string; answer:
         aria-pressed={flipped}
         className="sdg-flip group block w-full min-h-[20rem] overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-900/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
-        <div className="sdg-flip-ribbon hidden md:block">
+        <div className="sdg-flip-ribbon">
           <UaeRibbon />
         </div>
         <div className={`sdg-flip-inner ${flipped ? "is-flipped" : ""}`}>
