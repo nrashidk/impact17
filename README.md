@@ -2,6 +2,8 @@
 
 Bilingual (Arabic/English) UAE-focused web platform for verified action on the 17 UN Sustainable Development Goals.
 
+**Live:** <https://impact17.ae>
+
 See `CLAUDE.md` for project context and conventions, and `docs/spec.md` for the product specification.
 
 ## Tech

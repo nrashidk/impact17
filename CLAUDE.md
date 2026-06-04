@@ -22,7 +22,7 @@ Impact17 is a bilingual (Arabic/English) public consumer web platform where user
 - **AI:** Anthropic Claude API for photo verification AND content moderation
 - **File storage:** UploadThing or direct to S3-compatible storage (DO Spaces)
 - **Email:** Resend
-- **Hosting:** Vercel
+- **Hosting:** Vercel (production: https://impact17.ae)
 - **i18n:** next-intl (Arabic RTL support required)
 
 Do not introduce new frameworks, ORMs, or auth libraries without explicit user approval.
