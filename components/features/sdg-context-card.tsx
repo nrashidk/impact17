@@ -52,7 +52,7 @@ export function SdgContextCard({ question, answer }: { question: string; answer:
         </div>
         <div className={`sdg-flip-inner ${flipped ? "is-flipped" : ""}`}>
           <div className="sdg-flip-face sdg-flip-front" aria-hidden={flipped}>
-            <p className="text-base sm:text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+            <p className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
               {question}
             </p>
           </div>
