@@ -9,9 +9,6 @@ export async function Footer() {
         {t.rich("tagline", {
           strong: (chunks) => <strong className="font-semibold">{chunks}</strong>,
         })}
-        <p className="mt-3 text-xs text-zinc-500 dark:text-zinc-500">
-          {t("copyright")}
-        </p>
       </div>
     </footer>
   );
